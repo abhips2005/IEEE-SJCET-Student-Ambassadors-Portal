@@ -6,11 +6,18 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { AdminGuard } from "./AuthGuard";
 import { NotificationBell } from "./NotificationBell";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const NAV = [
   { to: "/admin", label: "Overview", icon: "dashboard", short: "Overview" },
   { to: "/admin/tasks", label: "Task Management", icon: "assignment", short: "Tasks" },
   { to: "/admin/ambassadors", label: "Ambassadors", icon: "group", short: "People" },
+  { to: "/admin/leaderboard", label: "Leaderboard", icon: "leaderboard", short: "Leaderboard" },
 ] as const;
 
 export function AdminShell({
@@ -99,18 +106,37 @@ export function AdminShell({
             </div>
             <div className="flex shrink-0 items-center gap-1 sm:gap-3">
               {headerAction}
+              <Link
+                to="/dashboard"
+                className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95"
+                title="Switch to Volunteer View"
+              >
+                <Icon name="swap_horiz" />
+              </Link>
               <NotificationBell />
-              {avatarUrl ? (
-                <img
-                  alt="Admin profile"
-                  className="w-9 h-9 shrink-0 rounded-full object-cover border-2 border-primary-fixed"
-                  src={avatarUrl}
-                />
-              ) : (
-                <div className="w-9 h-9 shrink-0 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-label-sm font-bold border-2 border-primary-fixed">
-                  {initials}
-                </div>
-              )}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full">
+                    {avatarUrl ? (
+                      <img
+                        alt="Admin profile"
+                        className="w-9 h-9 shrink-0 rounded-full object-cover border-2 border-primary-fixed cursor-pointer"
+                        src={avatarUrl}
+                      />
+                    ) : (
+                      <div className="w-9 h-9 shrink-0 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-label-sm font-bold border-2 border-primary-fixed cursor-pointer">
+                        {initials}
+                      </div>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 lg:hidden">
+                  <DropdownMenuItem className="text-error cursor-pointer gap-2" onClick={handleSignOut}>
+                    <Icon name="logout" className="text-[18px]" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </header>
 
@@ -118,8 +144,7 @@ export function AdminShell({
             <div className="mx-auto w-full max-w-[80rem]">{children}</div>
           </main>
         </div>
-
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-xl border-t border-outline-variant z-50 grid grid-cols-3 items-center h-16 pb-safe shadow-[0_-1px_8px_rgba(0,0,0,0.04)]">
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-xl border-t border-outline-variant z-50 grid grid-cols-4 items-center h-16 pb-safe shadow-[0_-1px_8px_rgba(0,0,0,0.04)]">
           {NAV.map((item) => {
             const active = pathname === item.to;
             return (

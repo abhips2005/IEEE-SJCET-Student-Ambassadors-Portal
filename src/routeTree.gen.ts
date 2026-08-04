@@ -18,6 +18,7 @@ import { Route as RegisterRouteImport } from './routes/register'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAmbassadorsRouteImport } from './routes/admin/ambassadors'
+import { Route as AdminLeaderboardRouteImport } from './routes/admin/leaderboard'
 import { Route as AdminTasksRouteImport } from './routes/admin/tasks'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,6 +66,11 @@ const AdminAmbassadorsRoute = AdminAmbassadorsRouteImport.update({
   path: '/admin/ambassadors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLeaderboardRoute = AdminLeaderboardRouteImport.update({
+  id: '/admin/leaderboard',
+  path: '/admin/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminTasksRoute = AdminTasksRouteImport.update({
   id: '/admin/tasks',
   path: '/admin/tasks',
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/tasks': typeof TasksRoute
   '/admin/ambassadors': typeof AdminAmbassadorsRoute
+  '/admin/leaderboard': typeof AdminLeaderboardRoute
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/tasks': typeof TasksRoute
   '/admin/ambassadors': typeof AdminAmbassadorsRoute
+  '/admin/leaderboard': typeof AdminLeaderboardRoute
   '/admin/tasks': typeof AdminTasksRoute
   '/admin': typeof AdminIndexRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/tasks': typeof TasksRoute
   '/admin/ambassadors': typeof AdminAmbassadorsRoute
+  '/admin/leaderboard': typeof AdminLeaderboardRoute
   '/admin/tasks': typeof AdminTasksRoute
   '/admin/': typeof AdminIndexRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/tasks'
     | '/admin/ambassadors'
+    | '/admin/leaderboard'
     | '/admin/tasks'
     | '/admin/'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/tasks'
     | '/admin/ambassadors'
+    | '/admin/leaderboard'
     | '/admin/tasks'
     | '/admin'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/tasks'
     | '/admin/ambassadors'
+    | '/admin/leaderboard'
     | '/admin/tasks'
     | '/admin/'
   fileRoutesById: FileRoutesById
@@ -156,6 +168,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   TasksRoute: typeof TasksRoute
   AdminAmbassadorsRoute: typeof AdminAmbassadorsRoute
+  AdminLeaderboardRoute: typeof AdminLeaderboardRoute
   AdminTasksRoute: typeof AdminTasksRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAmbassadorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/leaderboard': {
+      id: '/admin/leaderboard'
+      path: '/admin/leaderboard'
+      fullPath: '/admin/leaderboard'
+      preLoaderRoute: typeof AdminLeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/tasks': {
       id: '/admin/tasks'
       path: '/admin/tasks'
@@ -244,6 +264,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   TasksRoute: TasksRoute,
   AdminAmbassadorsRoute: AdminAmbassadorsRoute,
+  AdminLeaderboardRoute: AdminLeaderboardRoute,
   AdminTasksRoute: AdminTasksRoute,
   AdminIndexRoute: AdminIndexRoute,
 }

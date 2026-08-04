@@ -6,6 +6,12 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth-context";
 import { AuthGuard } from "./AuthGuard";
 import { NotificationBell } from "./NotificationBell";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard", mobileIcon: "grid_view", short: "Dashboard" },
@@ -145,6 +151,15 @@ export function PortalShell({
                   />
                 </div>
               )}
+              {profile?.role === "admin" && (
+                <Link
+                  to="/admin"
+                  className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95"
+                  title="Switch to Admin View"
+                >
+                  <Icon name="admin_panel_settings" />
+                </Link>
+              )}
               <NotificationBell />
               <div className="flex items-center gap-3 lg:pl-4 lg:border-l border-outline-variant">
                 <div className="text-right hidden sm:block">
@@ -153,17 +168,29 @@ export function PortalShell({
                   </div>
                   <div className="font-label-sm text-label-sm text-on-surface-variant capitalize">{profile?.role || "Ambassador"}</div>
                 </div>
-                {avatarUrl ? (
-                  <img
-                    alt="Profile"
-                    className="w-9 h-9 shrink-0 rounded-full object-cover border-2 border-primary-fixed"
-                    src={avatarUrl}
-                  />
-                ) : (
-                  <div className="w-9 h-9 shrink-0 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-label-sm font-bold border-2 border-primary-fixed">
-                    {initials}
-                  </div>
-                )}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button className="outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-full">
+                      {avatarUrl ? (
+                        <img
+                          alt="Profile"
+                          className="w-9 h-9 shrink-0 rounded-full object-cover border-2 border-primary-fixed cursor-pointer"
+                          src={avatarUrl}
+                        />
+                      ) : (
+                        <div className="w-9 h-9 shrink-0 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-label-sm font-bold border-2 border-primary-fixed cursor-pointer">
+                          {initials}
+                        </div>
+                      )}
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48 lg:hidden">
+                    <DropdownMenuItem className="text-error cursor-pointer gap-2" onClick={handleSignOut}>
+                      <Icon name="logout" className="text-[18px]" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </header>
