@@ -17,8 +17,11 @@ const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard", mobileIcon: "grid_view", short: "Dashboard" },
   { to: "/tasks", label: "Tasks", icon: "assignment", mobileIcon: "task_alt", short: "Tasks" },
   { to: "/leaderboard", label: "Leaderboard", icon: "leaderboard", mobileIcon: "leaderboard", short: "Ranking" },
+  { to: "/member-addition", label: "Add Member", icon: "person_add", mobileIcon: "person_add", short: "Add Mbr" },
+  { to: "/queries", label: "Queries", icon: "help", mobileIcon: "help_outline", short: "Queries" },
   { to: "/profile", label: "Profile", icon: "person", mobileIcon: "person_outline", short: "Profile" },
 ] as const;
+
 
 export function PortalShell({
   children,

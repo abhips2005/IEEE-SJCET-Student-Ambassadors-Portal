@@ -2,10 +2,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Icon } from "@/components/Icon";
 import { AdminShell } from "@/components/AdminShell";
-import { useAllProfiles, useUpdateProfileStatus, useAdjustPoints } from "@/hooks/use-profiles";
+import { useAllProfiles, useUpdateProfileStatus, useAdjustPoints, useUpdateRole } from "@/hooks/use-profiles";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { DEPARTMENTS, DEPT_MAP, ROLES, ROLE_MAP } from "@/lib/constants";
 
 export const Route = createFileRoute("/admin/ambassadors")({
   component: AdminAmbassadorsPage,
@@ -39,20 +40,29 @@ const STATUS_STYLES: Record<string, string> = {
 };
 
 function AdminAmbassadorsPage() {
-  const [statusFilter, setStatusFilter] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [deptFilter, setDeptFilter] = useState("");
+  const [semFilter, setSemFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
   const [search, setSearch] = useState("");
   const [pointsModal, setPointsModal] = useState<{ userId: string; userName: string } | null>(null);
+  const [roleModal, setRoleModal] = useState<{ userId: string; userName: string; currentRole: string; assignedDepts: string[] } | null>(null);
   const [pointAmount, setPointAmount] = useState("");
   const [pointReason, setPointReason] = useState("");
+  const [newRole, setNewRole] = useState("");
+  const [newAssignedDepts, setNewAssignedDepts] = useState<string[]>([]);
 
-  const { data: profiles, isLoading } = useAllProfiles(statusFilter || undefined);
+  const { data: profiles, isLoading } = useAllProfiles();
   const updateStatus = useUpdateProfileStatus();
   const adjustPoints = useAdjustPoints();
+  const updateRole = useUpdateRole();
 
   const filteredProfiles = profiles?.filter((p) => {
-    if (search && !p.full_name.toLowerCase().includes(search.toLowerCase()) && !p.ieee_member_id.includes(search)) {
-      return false;
-    }
+    if (search && !p.full_name.toLowerCase().includes(search.toLowerCase()) && !(p.ieee_member_id ?? "").includes(search) && !(p.ambassador_id ?? "").includes(search)) return false;
+    if (statusFilter && p.status !== statusFilter) return false;
+    if (deptFilter && p.department !== deptFilter) return false;
+    if (semFilter && String(p.semester) !== semFilter) return false;
+    if (roleFilter && p.role !== roleFilter) return false;
     return true;
   }) ?? [];
 
@@ -103,6 +113,22 @@ function AdminAmbassadorsPage() {
     }
   };
 
+  const handleUpdateRole = async () => {
+    if (!roleModal || !newRole) return;
+    try {
+      await updateRole.mutateAsync({
+        userId: roleModal.userId,
+        role: newRole,
+        ...(newRole === "reviewer" ? { assignedDepartments: newAssignedDepts } : {}),
+      });
+      toast.success("Role updated!");
+      setRoleModal(null);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to update role");
+    }
+  };
+
+
   return (
     <AdminShell title="Ambassadors">
       <div className="flex flex-col gap-6">
@@ -124,28 +150,62 @@ function AdminAmbassadorsPage() {
           </div>
         </div>
 
-        {/* Search + Filter */}
-        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
-          <div className="relative flex-1 w-full">
+        {/* Search + Multi-Filter */}
+        <div className="flex flex-col gap-3">
+          <div className="relative">
             <Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" />
             <input
               aria-label="Search ambassadors"
               className="w-full h-12 pl-11 pr-3 rounded-xl bg-surface-container-highest text-body-md text-on-surface outline-none focus:ring-2 focus:ring-primary transition-shadow"
-              placeholder="Search by name or IEEE ID..."
+              placeholder="Search by name, IEEE ID, or SBA ID..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <select
-            className="h-12 bg-surface-container-lowest border border-outline-variant rounded-xl px-4 font-label-md text-label-md text-on-surface outline-none focus:ring-2 ring-primary/20"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">All Statuses</option>
-            <option value="pending">Pending</option>
-            <option value="active">Active</option>
-            <option value="suspended">Suspended</option>
-          </select>
+          <div className="flex flex-wrap gap-2">
+            <select
+              className="h-10 bg-surface-container-lowest border border-outline-variant rounded-xl px-3 font-label-md text-label-md text-on-surface text-sm outline-none focus:ring-2 ring-primary/20"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="active">Active</option>
+              <option value="suspended">Suspended</option>
+            </select>
+            <select
+              className="h-10 bg-surface-container-lowest border border-outline-variant rounded-xl px-3 font-label-md text-label-md text-on-surface text-sm outline-none focus:ring-2 ring-primary/20"
+              value={deptFilter}
+              onChange={(e) => setDeptFilter(e.target.value)}
+            >
+              <option value="">All Departments</option>
+              {DEPARTMENTS.map((d) => <option key={d.value} value={d.value}>{d.short}</option>)}
+            </select>
+            <select
+              className="h-10 bg-surface-container-lowest border border-outline-variant rounded-xl px-3 font-label-md text-label-md text-on-surface text-sm outline-none focus:ring-2 ring-primary/20"
+              value={semFilter}
+              onChange={(e) => setSemFilter(e.target.value)}
+            >
+              <option value="">All Semesters</option>
+              {[1,2,3,4,5,6,7,8].map((n) => <option key={n} value={String(n)}>Sem {n}</option>)}
+            </select>
+            <select
+              className="h-10 bg-surface-container-lowest border border-outline-variant rounded-xl px-3 font-label-md text-label-md text-on-surface text-sm outline-none focus:ring-2 ring-primary/20"
+              value={roleFilter}
+              onChange={(e) => setRoleFilter(e.target.value)}
+            >
+              <option value="">All Roles</option>
+              {ROLES.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
+            </select>
+            {(statusFilter || deptFilter || semFilter || roleFilter || search) && (
+              <button
+                onClick={() => { setStatusFilter(""); setDeptFilter(""); setSemFilter(""); setRoleFilter(""); setSearch(""); }}
+                className="h-10 px-3 bg-error/10 text-error rounded-xl font-label-md text-label-md text-sm hover:bg-error/20 transition-colors flex items-center gap-1"
+              >
+                <Icon name="clear" className="text-[16px]" /> Clear
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Ambassador list */}
@@ -190,7 +250,7 @@ function AdminAmbassadorsPage() {
 
                   {/* Info */}
                   <div className="flex flex-col min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-body-md text-on-surface font-semibold truncate">
                         {p.full_name || "Unnamed"}
                       </span>
@@ -202,16 +262,19 @@ function AdminAmbassadorsPage() {
                       >
                         {p.status}
                       </span>
+                      <span className="font-label-sm text-[10px] px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant uppercase tracking-wider shrink-0">
+                        {ROLE_MAP[p.role] || p.role}
+                      </span>
                     </div>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-on-surface-variant">
                       <span className="font-label-sm text-label-sm">
-                        {DEPT_LABELS[p.department] || p.department}
+                        {DEPT_MAP[p.department] || p.department}
                       </span>
+                      {p.ambassador_id && (
+                        <span className="font-label-sm text-label-sm text-primary font-mono">{p.ambassador_id}</span>
+                      )}
                       <span className="font-label-sm text-label-sm">
-                        ID: {p.ieee_member_id || "—"}
-                      </span>
-                      <span className="font-label-sm text-label-sm">
-                        Joined {format(new Date(p.created_at), "MMM yyyy")}
+                        Sem {p.semester} · Joined {format(new Date(p.created_at), "MMM yyyy")}
                       </span>
                     </div>
                   </div>
@@ -227,6 +290,14 @@ function AdminAmbassadorsPage() {
 
                   {/* Actions */}
                   <div className="flex items-center gap-1 shrink-0">
+                    {/* Change Role */}
+                    <button
+                      onClick={() => { setRoleModal({ userId: p.id, userName: p.full_name, currentRole: p.role, assignedDepts: (p as any).assigned_departments || [] }); setNewRole(p.role); setNewAssignedDepts((p as any).assigned_departments || []); }}
+                      className="p-2 text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors"
+                      title="Change Role"
+                    >
+                      <Icon name="manage_accounts" className="text-[20px]" />
+                    </button>
                     {p.status === "pending" && (
                       <button
                         onClick={() => handleApprove(p.id)}
@@ -320,6 +391,70 @@ function AdminAmbassadorsPage() {
                 className="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:shadow-md transition-all disabled:opacity-50"
               >
                 {adjustPoints.isPending ? "Saving..." : "Apply Adjustment"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Role change modal */}
+      {roleModal && (
+        <div className="fixed inset-0 bg-on-surface/50 z-[100] flex items-center justify-center px-4">
+          <div className="bg-surface rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-headline-md text-on-surface mb-1">Change Role</h3>
+            <p className="text-body-sm text-on-surface-variant mb-4">
+              Update role for <span className="font-semibold text-on-surface">{roleModal.userName}</span>
+            </p>
+            <div className="space-y-4">
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-1">New Role</label>
+                <select
+                  className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={newRole}
+                  onChange={(e) => setNewRole(e.target.value)}
+                >
+                  {ROLES.map((r) => (
+                    <option key={r.value} value={r.value}>{r.label}</option>
+                  ))}
+                </select>
+              </div>
+              {newRole === "reviewer" && (
+                <div>
+                  <label className="font-label-md text-label-md text-on-surface block mb-2">Assigned Departments</label>
+                  <div className="flex flex-wrap gap-2">
+                    {DEPARTMENTS.map((d) => (
+                      <button
+                        key={d.value}
+                        type="button"
+                        onClick={() => setNewAssignedDepts((prev) =>
+                          prev.includes(d.value) ? prev.filter((x) => x !== d.value) : [...prev, d.value]
+                        )}
+                        className={cn(
+                          "px-3 py-1.5 rounded-lg font-label-sm text-label-sm transition-all",
+                          newAssignedDepts.includes(d.value)
+                            ? "bg-primary text-on-primary"
+                            : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                        )}
+                      >
+                        {d.short}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button
+                onClick={() => setRoleModal(null)}
+                className="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleUpdateRole}
+                disabled={!newRole || updateRole.isPending}
+                className="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+              >
+                {updateRole.isPending ? "Saving..." : "Update Role"}
               </button>
             </div>
           </div>

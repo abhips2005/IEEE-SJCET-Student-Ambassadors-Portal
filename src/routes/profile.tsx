@@ -5,6 +5,7 @@ import { PortalShell } from "@/components/PortalShell";
 import { useAuth } from "@/lib/auth-context";
 import { useProfile, useUpdateProfile, useUserStats, useUploadAvatar } from "@/hooks/use-profiles";
 import { toast } from "sonner";
+import { DEPARTMENTS, DEPT_MAP, ROLE_MAP } from "@/lib/constants";
 
 export const Route = createFileRoute("/profile")({
   component: ProfilePage,
@@ -22,14 +23,7 @@ export const Route = createFileRoute("/profile")({
   }),
 });
 
-const DEPT_LABELS: Record<string, string> = {
-  cs: "Computer Science",
-  ee: "Electrical Engineering",
-  me: "Mechanical Engineering",
-  ce: "Civil Engineering",
-  it: "Information Technology",
-  other: "Other",
-};
+
 
 
 
@@ -100,6 +94,8 @@ function ProfilePage() {
   const [editName, setEditName] = useState("");
   const [editDept, setEditDept] = useState("");
   const [editSem, setEditSem] = useState("");
+  const [editSection, setEditSection] = useState("");
+  const [editMobile, setEditMobile] = useState("");
   
   const uploadAvatar = useUploadAvatar();
   
@@ -133,6 +129,8 @@ function ProfilePage() {
     setEditName(profile?.full_name || "");
     setEditDept(profile?.department || "other");
     setEditSem(String(profile?.semester || 1));
+    setEditSection(profile?.section || "");
+    setEditMobile(profile?.mobile_number || "");
     setEditing(true);
   };
 
@@ -142,7 +140,9 @@ function ProfilePage() {
         full_name: editName,
         department: editDept,
         semester: parseInt(editSem, 10),
-      });
+        section: editSection || undefined,
+        mobile_number: editMobile || undefined,
+      } as any);
       toast.success("Profile updated!");
       setEditing(false);
     } catch (err: any) {
@@ -182,10 +182,14 @@ function ProfilePage() {
   ];
 
   const DETAILS = [
+    { label: "Ambassador ID", value: profile.ambassador_id || "—", icon: "id_card" },
     { label: "IEEE Membership ID", value: profile.ieee_member_id || "—", icon: "badge" },
-    { label: "Department", value: DEPT_LABELS[profile.department] || profile.department, icon: "account_balance" },
+    { label: "Department", value: DEPT_MAP[profile.department] || profile.department, icon: "account_balance" },
     { label: "Semester", value: `${profile.semester}${profile.semester === 1 ? "st" : profile.semester === 2 ? "nd" : profile.semester === 3 ? "rd" : "th"} Semester`, icon: "date_range" },
+    { label: "Section", value: profile.section || "—", icon: "class" },
+    { label: "Mobile", value: profile.mobile_number || "—", icon: "phone" },
     { label: "Email", value: user?.email || "—", icon: "mail" },
+    { label: "Role", value: ROLE_MAP[profile.role] || profile.role, icon: "shield_person" },
   ];
 
   return (
@@ -207,7 +211,7 @@ function ProfilePage() {
           <div className="min-w-0 text-center sm:text-left flex-1">
             <h1 className="text-headline-lg break-words">{profile.full_name}</h1>
             <p className="text-body-md text-on-primary/80 capitalize">
-              {profile.role} · {DEPT_LABELS[profile.department] || profile.department}
+              {ROLE_MAP[profile.role] || profile.role} · {DEPT_MAP[profile.department] || profile.department}
             </p>
             <span className="inline-flex items-center gap-1 mt-3 px-3 py-1 rounded-full bg-on-primary/20 font-label-sm text-label-sm uppercase tracking-wider">
               <Icon name="verified" className="text-[16px]" />
@@ -306,12 +310,9 @@ function ProfilePage() {
                   value={editDept}
                   onChange={(e) => setEditDept(e.target.value)}
                 >
-                  <option value="cs">Computer Science</option>
-                  <option value="ee">Electrical Engineering</option>
-                  <option value="me">Mechanical Engineering</option>
-                  <option value="ce">Civil Engineering</option>
-                  <option value="it">Information Technology</option>
-                  <option value="other">Other</option>
+                  {DEPARTMENTS.map((d) => (
+                    <option key={d.value} value={d.value}>{d.label}</option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -327,6 +328,25 @@ function ProfilePage() {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-1">Section</label>
+                <input
+                  className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="e.g. A, B, C"
+                  value={editSection}
+                  onChange={(e) => setEditSection(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-1">Mobile Number</label>
+                <input
+                  type="tel"
+                  className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
+                  placeholder="+91 XXXXX XXXXX"
+                  value={editMobile}
+                  onChange={(e) => setEditMobile(e.target.value)}
+                />
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-6">

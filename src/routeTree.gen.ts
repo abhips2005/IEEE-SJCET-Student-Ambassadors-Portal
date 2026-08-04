@@ -11,15 +11,23 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as MemberAdditionRouteImport } from './routes/member-addition'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as QueriesRouteImport } from './routes/queries'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as TasksRouteImport } from './routes/tasks'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as AdminAmbassadorsRouteImport } from './routes/admin/ambassadors'
+import { Route as AdminGalleryRouteImport } from './routes/admin/gallery'
 import { Route as AdminLeaderboardRouteImport } from './routes/admin/leaderboard'
+import { Route as AdminMemberAdditionsRouteImport } from './routes/admin/member-additions'
+import { Route as AdminQueriesRouteImport } from './routes/admin/queries'
 import { Route as AdminTasksRouteImport } from './routes/admin/tasks'
+import { Route as ReviewerIndexRouteImport } from './routes/reviewer/index'
+import { Route as ReviewerSubmissionsRouteImport } from './routes/reviewer/submissions'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -29,6 +37,11 @@ const IndexRoute = IndexRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LeaderboardRoute = LeaderboardRouteImport.update({
@@ -41,9 +54,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MemberAdditionRoute = MemberAdditionRouteImport.update({
+  id: '/member-addition',
+  path: '/member-addition',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const QueriesRoute = QueriesRouteImport.update({
+  id: '/queries',
+  path: '/queries',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -66,9 +89,24 @@ const AdminAmbassadorsRoute = AdminAmbassadorsRouteImport.update({
   path: '/admin/ambassadors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminGalleryRoute = AdminGalleryRouteImport.update({
+  id: '/admin/gallery',
+  path: '/admin/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLeaderboardRoute = AdminLeaderboardRouteImport.update({
   id: '/admin/leaderboard',
   path: '/admin/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMemberAdditionsRoute = AdminMemberAdditionsRouteImport.update({
+  id: '/admin/member-additions',
+  path: '/admin/member-additions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminQueriesRoute = AdminQueriesRouteImport.update({
+  id: '/admin/queries',
+  path: '/admin/queries',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminTasksRoute = AdminTasksRouteImport.update({
@@ -76,101 +114,167 @@ const AdminTasksRoute = AdminTasksRouteImport.update({
   path: '/admin/tasks',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewerIndexRoute = ReviewerIndexRouteImport.update({
+  id: '/reviewer/',
+  path: '/reviewer/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewerSubmissionsRoute = ReviewerSubmissionsRouteImport.update({
+  id: '/reviewer/submissions',
+  path: '/reviewer/submissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/gallery': typeof GalleryRoute
   '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
+  '/member-addition': typeof MemberAdditionRoute
   '/profile': typeof ProfileRoute
+  '/queries': typeof QueriesRoute
   '/register': typeof RegisterRoute
   '/tasks': typeof TasksRoute
   '/admin/ambassadors': typeof AdminAmbassadorsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/leaderboard': typeof AdminLeaderboardRoute
+  '/admin/member-additions': typeof AdminMemberAdditionsRoute
+  '/admin/queries': typeof AdminQueriesRoute
   '/admin/tasks': typeof AdminTasksRoute
+  '/reviewer/submissions': typeof ReviewerSubmissionsRoute
   '/admin/': typeof AdminIndexRoute
+  '/reviewer/': typeof ReviewerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/gallery': typeof GalleryRoute
   '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
+  '/member-addition': typeof MemberAdditionRoute
   '/profile': typeof ProfileRoute
+  '/queries': typeof QueriesRoute
   '/register': typeof RegisterRoute
   '/tasks': typeof TasksRoute
   '/admin/ambassadors': typeof AdminAmbassadorsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/leaderboard': typeof AdminLeaderboardRoute
+  '/admin/member-additions': typeof AdminMemberAdditionsRoute
+  '/admin/queries': typeof AdminQueriesRoute
   '/admin/tasks': typeof AdminTasksRoute
+  '/reviewer/submissions': typeof ReviewerSubmissionsRoute
   '/admin': typeof AdminIndexRoute
+  '/reviewer': typeof ReviewerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/gallery': typeof GalleryRoute
   '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
+  '/member-addition': typeof MemberAdditionRoute
   '/profile': typeof ProfileRoute
+  '/queries': typeof QueriesRoute
   '/register': typeof RegisterRoute
   '/tasks': typeof TasksRoute
   '/admin/ambassadors': typeof AdminAmbassadorsRoute
+  '/admin/gallery': typeof AdminGalleryRoute
   '/admin/leaderboard': typeof AdminLeaderboardRoute
+  '/admin/member-additions': typeof AdminMemberAdditionsRoute
+  '/admin/queries': typeof AdminQueriesRoute
   '/admin/tasks': typeof AdminTasksRoute
+  '/reviewer/submissions': typeof ReviewerSubmissionsRoute
   '/admin/': typeof AdminIndexRoute
+  '/reviewer/': typeof ReviewerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/gallery'
     | '/leaderboard'
     | '/login'
+    | '/member-addition'
     | '/profile'
+    | '/queries'
     | '/register'
     | '/tasks'
     | '/admin/ambassadors'
+    | '/admin/gallery'
     | '/admin/leaderboard'
+    | '/admin/member-additions'
+    | '/admin/queries'
     | '/admin/tasks'
+    | '/reviewer/submissions'
     | '/admin/'
+    | '/reviewer/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dashboard'
+    | '/gallery'
     | '/leaderboard'
     | '/login'
+    | '/member-addition'
     | '/profile'
+    | '/queries'
     | '/register'
     | '/tasks'
     | '/admin/ambassadors'
+    | '/admin/gallery'
     | '/admin/leaderboard'
+    | '/admin/member-additions'
+    | '/admin/queries'
     | '/admin/tasks'
+    | '/reviewer/submissions'
     | '/admin'
+    | '/reviewer'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/gallery'
     | '/leaderboard'
     | '/login'
+    | '/member-addition'
     | '/profile'
+    | '/queries'
     | '/register'
     | '/tasks'
     | '/admin/ambassadors'
+    | '/admin/gallery'
     | '/admin/leaderboard'
+    | '/admin/member-additions'
+    | '/admin/queries'
     | '/admin/tasks'
+    | '/reviewer/submissions'
     | '/admin/'
+    | '/reviewer/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  GalleryRoute: typeof GalleryRoute
   LeaderboardRoute: typeof LeaderboardRoute
   LoginRoute: typeof LoginRoute
+  MemberAdditionRoute: typeof MemberAdditionRoute
   ProfileRoute: typeof ProfileRoute
+  QueriesRoute: typeof QueriesRoute
   RegisterRoute: typeof RegisterRoute
   TasksRoute: typeof TasksRoute
   AdminAmbassadorsRoute: typeof AdminAmbassadorsRoute
+  AdminGalleryRoute: typeof AdminGalleryRoute
   AdminLeaderboardRoute: typeof AdminLeaderboardRoute
+  AdminMemberAdditionsRoute: typeof AdminMemberAdditionsRoute
+  AdminQueriesRoute: typeof AdminQueriesRoute
   AdminTasksRoute: typeof AdminTasksRoute
+  ReviewerSubmissionsRoute: typeof ReviewerSubmissionsRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ReviewerIndexRoute: typeof ReviewerIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -189,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/leaderboard': {
       id: '/leaderboard'
       path: '/leaderboard'
@@ -203,11 +314,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/member-addition': {
+      id: '/member-addition'
+      path: '/member-addition'
+      fullPath: '/member-addition'
+      preLoaderRoute: typeof MemberAdditionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/queries': {
+      id: '/queries'
+      path: '/queries'
+      fullPath: '/queries'
+      preLoaderRoute: typeof QueriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/register': {
@@ -238,11 +363,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAmbassadorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/gallery': {
+      id: '/admin/gallery'
+      path: '/admin/gallery'
+      fullPath: '/admin/gallery'
+      preLoaderRoute: typeof AdminGalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/leaderboard': {
       id: '/admin/leaderboard'
       path: '/admin/leaderboard'
       fullPath: '/admin/leaderboard'
       preLoaderRoute: typeof AdminLeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/member-additions': {
+      id: '/admin/member-additions'
+      path: '/admin/member-additions'
+      fullPath: '/admin/member-additions'
+      preLoaderRoute: typeof AdminMemberAdditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/queries': {
+      id: '/admin/queries'
+      path: '/admin/queries'
+      fullPath: '/admin/queries'
+      preLoaderRoute: typeof AdminQueriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/tasks': {
@@ -252,21 +398,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTasksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reviewer/': {
+      id: '/reviewer/'
+      path: '/reviewer'
+      fullPath: '/reviewer/'
+      preLoaderRoute: typeof ReviewerIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviewer/submissions': {
+      id: '/reviewer/submissions'
+      path: '/reviewer/submissions'
+      fullPath: '/reviewer/submissions'
+      preLoaderRoute: typeof ReviewerSubmissionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  GalleryRoute: GalleryRoute,
   LeaderboardRoute: LeaderboardRoute,
   LoginRoute: LoginRoute,
+  MemberAdditionRoute: MemberAdditionRoute,
   ProfileRoute: ProfileRoute,
+  QueriesRoute: QueriesRoute,
   RegisterRoute: RegisterRoute,
   TasksRoute: TasksRoute,
   AdminAmbassadorsRoute: AdminAmbassadorsRoute,
+  AdminGalleryRoute: AdminGalleryRoute,
   AdminLeaderboardRoute: AdminLeaderboardRoute,
+  AdminMemberAdditionsRoute: AdminMemberAdditionsRoute,
+  AdminQueriesRoute: AdminQueriesRoute,
   AdminTasksRoute: AdminTasksRoute,
+  ReviewerSubmissionsRoute: ReviewerSubmissionsRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ReviewerIndexRoute: ReviewerIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -4,6 +4,7 @@ import { AuthLayout, Field, inputClass } from "@/components/AuthLayout";
 import { Icon } from "@/components/Icon";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
+import { DEPARTMENTS, SECTIONS } from "@/lib/constants";
 
 export const Route = createFileRoute("/register")({
   component: RegisterPage,
@@ -33,8 +34,10 @@ function RegisterPage() {
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
   const [department, setDepartment] = useState("");
   const [semester, setSemester] = useState("");
+  const [section, setSection] = useState("");
   const [ieeeId, setIeeeId] = useState("");
   const [password, setPassword] = useState("");
 
@@ -47,13 +50,20 @@ function RegisterPage() {
       return;
     }
 
+    if (!/^\+?[0-9]{10,15}$/.test(mobile.replace(/\s/g, ""))) {
+      setErrorMsg("Please enter a valid mobile number.");
+      return;
+    }
+
     setSubmitting(true);
 
     const { error } = await signUp(email, password, {
       full_name: fullName,
       department,
       semester: parseInt(semester, 10),
-      ieee_member_id: ieeeId,
+      section,
+      mobile_number: mobile,
+      ...(ieeeId !== "" ? { ieee_member_id: ieeeId } : {}),
     });
 
     if (error) {
@@ -123,11 +133,23 @@ function RegisterPage() {
           <input
             className={inputClass}
             id="email"
-            placeholder="jane.doe@university.edu"
+            placeholder="jane.doe@gmail.com"
             required
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+          />
+        </Field>
+
+        <Field id="mobile" label="Mobile Number" icon="phone">
+          <input
+            className={inputClass}
+            id="mobile"
+            placeholder="+91 9876543210"
+            required
+            type="tel"
+            value={mobile}
+            onChange={(e) => setMobile(e.target.value)}
           />
         </Field>
 
@@ -153,12 +175,11 @@ function RegisterPage() {
               <option disabled value="">
                 Select Dept
               </option>
-              <option value="cs">Computer Science</option>
-              <option value="ee">Electrical Engineering</option>
-              <option value="me">Mechanical Engineering</option>
-              <option value="ce">Civil Engineering</option>
-              <option value="it">Information Technology</option>
-              <option value="other">Other</option>
+              {DEPARTMENTS.map((d) => (
+                <option key={d.value} value={d.value}>
+                  {d.label}
+                </option>
+              ))}
             </select>
           </Field>
 
@@ -193,12 +214,40 @@ function RegisterPage() {
           </Field>
         </div>
 
-        <Field id="ieeeId" label="IEEE Membership ID" icon="badge">
+        <Field
+          id="section"
+          label="Section"
+          icon="group_work"
+          trailing={
+            <Icon
+              name="expand_more"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none"
+            />
+          }
+        >
+          <select
+            className={selectClass}
+            id="section"
+            required
+            value={section}
+            onChange={(e) => setSection(e.target.value)}
+          >
+            <option disabled value="">
+              Select Section
+            </option>
+            {SECTIONS.map((s) => (
+              <option key={s} value={s}>
+                Section {s}
+              </option>
+            ))}
+          </select>
+        </Field>
+
+        <Field id="ieeeId" label="IEEE Membership ID (Optional)" icon="badge">
           <input
             className={`${inputClass} font-mono tracking-wider`}
             id="ieeeId"
-            placeholder="12345678"
-            required
+            placeholder="12345678 (leave blank if not a member)"
             type="text"
             value={ieeeId}
             onChange={(e) => setIeeeId(e.target.value)}

@@ -19,7 +19,7 @@ interface AuthContextValue {
   signUp: (
     email: string,
     password: string,
-    meta: { full_name: string; department: string; semester: number; ieee_member_id: string },
+    meta: { full_name: string; department: string; semester: number; section: string; mobile_number: string; ieee_member_id?: string },
   ) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (
       email: string,
       password: string,
-      meta: { full_name: string; department: string; semester: number; ieee_member_id: string },
+      meta: { full_name: string; department: string; semester: number; section: string; mobile_number: string; ieee_member_id?: string },
     ) => {
       const { error } = await supabase.auth.signUp({
         email,

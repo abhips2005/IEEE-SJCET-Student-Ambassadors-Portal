@@ -82,6 +82,9 @@ function Landing() {
             <a className="text-on-surface-variant hover:text-primary transition-colors" href="#stats">
               Stats
             </a>
+            <Link className="text-on-surface-variant hover:text-primary transition-colors" to="/gallery">
+              Gallery
+            </Link>
             <Link className="text-on-surface-variant hover:text-primary transition-colors" to="/dashboard">
               Portal
             </Link>

@@ -14,6 +14,8 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import type { Task } from "@/lib/database.types";
+import { DEPARTMENTS } from "@/lib/constants";
+import type { TargetRole } from "@/lib/database.types";
 
 type TasksSearch = {
   tab?: string | undefined;
@@ -72,9 +74,12 @@ function AdminTasksPage() {
   const [formMaxClaim, setFormMaxClaim] = useState("1");
   const [formTargetDept, setFormTargetDept] = useState("all");
   const [formTargetSem, setFormTargetSem] = useState("all");
+  const [formTargetRole, setFormTargetRole] = useState<"all" | "class_ambassador" | "dept_ambassador">("all");
 
   const { data: tasks, isLoading } = useTasks();
-  const { data: submissions } = useAllAssignments("submitted");
+  const { data: submittedItems } = useAllAssignments("submitted");
+  const { data: reviewerApprovedItems } = useAllAssignments("reviewer_approved");
+  const submissions = [...(submittedItems ?? []), ...(reviewerApprovedItems ?? [])];
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
@@ -93,6 +98,7 @@ function AdminTasksPage() {
     setFormMaxClaim("1");
     setFormTargetDept("all");
     setFormTargetSem("all");
+    setFormTargetRole("all");
   };
 
   const openEdit = (task: Task) => {
@@ -105,6 +111,7 @@ function AdminTasksPage() {
     setFormMaxClaim(String(task.max_claimants));
     setFormTargetDept(task.target_department || "all");
     setFormTargetSem(task.target_semester ? String(task.target_semester) : "all");
+    setFormTargetRole((task.target_role as any) || "all");
     setShowCreateModal(true);
   };
 
@@ -133,8 +140,9 @@ function AdminTasksPage() {
           due_date: formDueDate || null,
           status: "open",
           max_claimants: parseInt(formMaxClaim, 10) || 1,
+          target_role: formTargetRole,
           target_department: formTargetDept === "all" ? null : formTargetDept,
-          target_semester: formTargetSem === "all" ? null : parseInt(formTargetSem, 10),
+          target_semester: formTargetRole === "dept_ambassador" ? null : (formTargetSem === "all" ? null : parseInt(formTargetSem, 10)),
         });
         toast.success("Task created!");
       }
@@ -253,7 +261,14 @@ function AdminTasksPage() {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <h3 className="text-body-lg font-semibold text-on-surface">{sub.task?.title || "Unknown Task"}</h3>
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <h3 className="text-body-lg font-semibold text-on-surface">{sub.task?.title || "Unknown Task"}</h3>
+                        {sub.status === "reviewer_approved" && (
+                          <span className="font-label-sm text-[10px] bg-secondary/10 text-secondary px-1.5 py-0.5 rounded-full shrink-0">
+                            Reviewer ✓
+                          </span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-2 mt-1">
                         {sub.user?.avatar_url ? (
                           <img className="w-6 h-6 rounded-full object-cover" src={sub.user.avatar_url} alt="" />
@@ -275,6 +290,21 @@ function AdminTasksPage() {
                         Submitted Proof
                       </p>
                       <p className="text-body-sm text-on-surface">{sub.proof_text}</p>
+                    </div>
+                  )}
+                  {sub.reviewer_remarks && (
+                    <div className="bg-secondary-container/30 rounded-lg p-3 border-l-2 border-secondary">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider">
+                          Reviewer Notes
+                        </p>
+                        {sub.reviewer_points_suggested != null && (
+                          <span className="font-label-sm text-[10px] bg-secondary/10 text-secondary px-1.5 py-0.5 rounded-full">
+                            Suggests {sub.reviewer_points_suggested} pts
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-body-sm text-on-surface">{sub.reviewer_remarks}</p>
                     </div>
                   )}
                   <div className="flex items-center justify-between pt-2 border-t border-outline-variant/30">
@@ -439,6 +469,18 @@ function AdminTasksPage() {
                   />
                 </div>
               </div>
+              <div>
+                <label className="font-label-md text-label-md text-on-surface block mb-1">Target Audience</label>
+                <select
+                  className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={formTargetRole}
+                  onChange={(e) => setFormTargetRole(e.target.value as TargetRole)}
+                >
+                  <option value="all">All Ambassadors</option>
+                  <option value="class_ambassador">Class Ambassadors Only</option>
+                  <option value="dept_ambassador">Dept Ambassadors Only</option>
+                </select>
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="font-label-md text-label-md text-on-surface block mb-1">Target Department</label>
@@ -448,29 +490,28 @@ function AdminTasksPage() {
                     onChange={(e) => setFormTargetDept(e.target.value)}
                   >
                     <option value="all">All Departments</option>
-                    <option value="cs">Computer Science</option>
-                    <option value="ee">Electrical Engineering</option>
-                    <option value="me">Mechanical Engineering</option>
-                    <option value="ce">Civil Engineering</option>
-                    <option value="it">Information Technology</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="font-label-md text-label-md text-on-surface block mb-1">Target Semester / Year</label>
-                  <select
-                    className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
-                    value={formTargetSem}
-                    onChange={(e) => setFormTargetSem(e.target.value)}
-                  >
-                    <option value="all">All Semesters</option>
-                    {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
-                      <option key={sem} value={String(sem)}>
-                        Semester {sem} (Year {Math.ceil(sem / 2)})
-                      </option>
+                    {DEPARTMENTS.map((d) => (
+                      <option key={d.value} value={d.value}>{d.label}</option>
                     ))}
                   </select>
                 </div>
+                {formTargetRole !== "dept_ambassador" && (
+                  <div>
+                    <label className="font-label-md text-label-md text-on-surface block mb-1">Target Semester</label>
+                    <select
+                      className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
+                      value={formTargetSem}
+                      onChange={(e) => setFormTargetSem(e.target.value)}
+                    >
+                      <option value="all">All Semesters</option>
+                      {[1, 2, 3, 4, 5, 6, 7, 8].map((sem) => (
+                        <option key={sem} value={String(sem)}>
+                          Semester {sem}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </div>
             <div className="flex justify-end gap-3 mt-6">

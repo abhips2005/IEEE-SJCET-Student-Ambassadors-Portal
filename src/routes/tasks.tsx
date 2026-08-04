@@ -66,11 +66,15 @@ function TasksPage() {
     allTasks?.filter((t) => {
       if (t.status !== "open" && t.status !== "in_progress") return false;
       if (myClaimedTaskIds.has(t.id)) return false;
-      
+
+      // Target role filtering (class_ambassador/dept_ambassador specificity)
+      if (t.target_role === "class_ambassador" && profile?.role !== "ambassador" && profile?.role !== "reviewer") return false;
+      if (t.target_role === "dept_ambassador" && profile?.role !== "dept_ambassador") return false;
+
       // Target audience filtering
       if (t.target_department && t.target_department !== profile?.department) return false;
       if (t.target_semester && t.target_semester !== profile?.semester) return false;
-      
+
       return true;
     }) ?? [];
   const inProgressAssignments =

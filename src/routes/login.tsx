@@ -167,7 +167,7 @@ function LoginPage() {
           <input
             className={inputClass}
             id="email"
-            placeholder="student@ieee.org"
+            placeholder="student@gmail.com"
             required
             type="email"
             value={email}

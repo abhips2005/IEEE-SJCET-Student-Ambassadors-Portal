@@ -1,0 +1,15 @@
+1. Add student semester in leaderboard
+2. Add Gallery in homepage (without login) - Admin controlled images
+3. Add departments - CS , CS-AI , CS-CY , AD , EC, ER,EEE, ME, CE (Remove all existing and add these)
+4. Roles : Admin (existing) , Dept ambassador (new) (Admin assigns dept) - show tasks targeted to them (add in target for new tasks) , Class ambassador (existing ambassador portal) , reviewer (dept wise)(admin assigned role) - show task submissions of their assigned department - they should see the submissions , edit points to be awarded , add remarks for submission -> Submit to admin for final review (with who is the reviewer) -> Admin final approves , edit points , add remarks-> Awarded
+5. IEEE Membership ID not mandatory during signup (add/edit in profile, and by admin)
+6. Collect mobile number mandatory during signup
+7. Collect section mandatory during signup (A,B,C)
+8. Filter ambassadors - All existing filters and department wise , sem wise , role wise (Multiple filters at same time)
+9. When a task is approved by admin -> Send approved email
+10. Add a query form for all ambassadors (dept , class) -> visible in admin panel
+11. Assign an ambassador ID for all ambassadors (SBA-C-123 , SBA-D-123)
+12. Split the leaderboard page as Dept ambassador section , Class Ambassador section - show individual leaderboards
+13. Public leaderboard in homepage (no login) - Top 5 class volunteers (with details) , Top 1 dept volunteer (with details)
+14. Add a new member addition tab for all ambassadors - Name,IEEE ID -> Submit -> Admin approval -> Admin awards points (editable before approval)
+15. Admin should be able to edit the role of all ambassadors

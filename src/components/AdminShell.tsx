@@ -18,7 +18,11 @@ const NAV = [
   { to: "/admin/tasks", label: "Task Management", icon: "assignment", short: "Tasks" },
   { to: "/admin/ambassadors", label: "Ambassadors", icon: "group", short: "People" },
   { to: "/admin/leaderboard", label: "Leaderboard", icon: "leaderboard", short: "Leaderboard" },
+  { to: "/admin/gallery", label: "Gallery", icon: "photo_library", short: "Gallery" },
+  { to: "/admin/queries", label: "Queries", icon: "help_center", short: "Queries" },
+  { to: "/admin/member-additions", label: "Member Additions", icon: "group_add", short: "Members" },
 ] as const;
+
 
 export function AdminShell({
   children,

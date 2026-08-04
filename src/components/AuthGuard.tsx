@@ -66,6 +66,25 @@ export function AdminGuard({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+/** Redirects non-reviewers (and non-admins) to /dashboard */
+export function ReviewerGuard({ children }: { children: ReactNode }) {
+  const { user, loading, profile } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate({ to: "/login" });
+    } else if (!loading && profile && profile.role !== "reviewer" && profile.role !== "admin") {
+      navigate({ to: "/dashboard" });
+    }
+  }, [loading, user, profile, navigate]);
+
+  if (loading) return <LoadingScreen />;
+  if (!user || !profile || (profile.role !== "reviewer" && profile.role !== "admin")) return null;
+
+  return <>{children}</>;
+}
+
 function LoadingScreen() {
   return (
     <div className="min-h-screen bg-surface flex items-center justify-center">
@@ -76,3 +95,4 @@ function LoadingScreen() {
     </div>
   );
 }
+

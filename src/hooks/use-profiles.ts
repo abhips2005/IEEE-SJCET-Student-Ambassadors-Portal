@@ -82,21 +82,75 @@ export function useUploadAvatar() {
 }
 
 /** Leaderboard: all active profiles ordered by points */
-export function useLeaderboard() {
+const LEADERBOARD_SELECT = "id, full_name, department, semester, ambassador_id, avatar_url, points";
+
+/** Class Ambassador leaderboard */
+export function useClassLeaderboard() {
   return useQuery({
-    queryKey: ["leaderboard"],
+    queryKey: ["leaderboard", "class"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, full_name, department, avatar_url, points")
+        .select(LEADERBOARD_SELECT)
         .eq("status", "active")
+        .in("role", ["ambassador", "reviewer"]) // class-side roles
         .order("points", { ascending: false })
         .limit(50);
       if (error) throw error;
-      return data as unknown as Pick<Profile, "id" | "full_name" | "department" | "avatar_url" | "points">[];
+      return data as unknown as Pick<Profile, "id" | "full_name" | "department" | "semester" | "ambassador_id" | "avatar_url" | "points">[];
     },
   });
 }
+
+/** Dept Ambassador leaderboard */
+export function useDeptLeaderboard() {
+  return useQuery({
+    queryKey: ["leaderboard", "dept"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select(LEADERBOARD_SELECT)
+        .eq("status", "active")
+        .eq("role", "dept_ambassador")
+        .order("points", { ascending: false })
+        .limit(50);
+      if (error) throw error;
+      return data as unknown as Pick<Profile, "id" | "full_name" | "department" | "semester" | "ambassador_id" | "avatar_url" | "points">[];
+    },
+  });
+}
+
+/** Public (no-auth) top 5 class + top 1 dept for homepage */
+export function usePublicLeaderboard() {
+  return useQuery({
+    queryKey: ["leaderboard", "public"],
+    queryFn: async () => {
+      const [classRes, deptRes] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select(LEADERBOARD_SELECT)
+          .eq("status", "active")
+          .in("role", ["ambassador", "reviewer"])
+          .order("points", { ascending: false })
+          .limit(5),
+        supabase
+          .from("profiles")
+          .select(LEADERBOARD_SELECT)
+          .eq("status", "active")
+          .eq("role", "dept_ambassador")
+          .order("points", { ascending: false })
+          .limit(1),
+      ]);
+      return {
+        class: (classRes.data ?? []) as unknown as Pick<Profile, "id" | "full_name" | "department" | "semester" | "ambassador_id" | "avatar_url" | "points">[],
+        dept: (deptRes.data ?? []) as unknown as Pick<Profile, "id" | "full_name" | "department" | "semester" | "ambassador_id" | "avatar_url" | "points">[],
+      };
+    },
+  });
+}
+
+/** @deprecated use useClassLeaderboard or useDeptLeaderboard */
+export function useLeaderboard() { return useClassLeaderboard(); }
 
 /** Admin: fetch all profiles */
 export function useAllProfiles(statusFilter?: string) {
@@ -186,3 +240,90 @@ export function useUserStats(userId?: string) {
     enabled: !!userId,
   });
 }
+
+/** Admin: update a user's role */
+export function useUpdateRole() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ userId, role, assignedDepartments }: { userId: string; role: string; assignedDepartments?: string[] }) => {
+      const updates: any = { role };
+      if (assignedDepartments !== undefined) updates.assigned_departments = assignedDepartments;
+      const { error } = await (supabase.from("profiles") as any).update(updates).eq("id", userId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["profiles"] });
+      qc.invalidateQueries({ queryKey: ["leaderboard"] });
+    },
+  });
+}
+
+/** Update current user's full profile (all editable fields) */
+export function useUpdateProfileFull() {
+  const qc = useQueryClient();
+  const { user, refreshProfile } = useAuth();
+  return useMutation({
+    mutationFn: async (updates: Partial<Pick<Profile, "full_name" | "department" | "semester" | "section" | "ieee_member_id" | "mobile_number" | "avatar_url">>) => {
+      if (!user) throw new Error("Not authenticated");
+      const { error } = await (supabase.from("profiles") as any).update(updates).eq("id", user.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["profile"] });
+      refreshProfile();
+    },
+  });
+}
+
+/** Reviewer: fetch submissions from assigned departments */
+export function useReviewerSubmissions() {
+  const { user } = useAuth();
+  return useQuery({
+    queryKey: ["reviewer-submissions", user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from("task_assignments")
+        .select("*, task:tasks(*), user:profiles!task_assignments_user_id_fkey(*)")
+        .eq("status", "submitted")
+        .order("submitted_at", { ascending: false });
+      if (error) throw error;
+      return data as any[];
+    },
+    enabled: !!user,
+  });
+}
+
+/** Reviewer: submit review for a submission */
+export function useSubmitReview() {
+  const qc = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async ({
+      assignmentId,
+      reviewerRemarks,
+      reviewerPointsSuggested,
+    }: {
+      assignmentId: string;
+      reviewerRemarks: string;
+      reviewerPointsSuggested: number;
+    }) => {
+      if (!user) throw new Error("Not authenticated");
+      const { error } = await (supabase.from("task_assignments") as any)
+        .update({
+          status: "reviewer_approved",
+          reviewer_id: user.id,
+          reviewer_remarks: reviewerRemarks,
+          reviewer_points_suggested: reviewerPointsSuggested,
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: user.id,
+        })
+        .eq("id", assignmentId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["reviewer-submissions"] });
+    },
+  });
+}
+
