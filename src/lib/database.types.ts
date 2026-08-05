@@ -75,6 +75,17 @@ export interface Announcement {
   created_at: string;
 }
 
+export interface Notification {
+  id: string;
+  user_id: string;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  metadata: Record<string, any>;
+  created_at: string;
+}
+
 export interface GalleryImage {
   id: string;
   image_url: string;
@@ -170,6 +181,12 @@ export interface Database {
         Row: MemberAddition;
         Insert: Partial<Omit<MemberAddition, "id" | "created_at" | "updated_at">> & { submitted_by: string; member_name: string; ieee_id: string };
         Update: Partial<Omit<MemberAddition, "id" | "created_at">>;
+        Relationships: [];
+      };
+      notifications: {
+        Row: Notification;
+        Insert: Partial<Omit<Notification, "id" | "created_at">> & { user_id: string; title: string; message: string };
+        Update: Partial<Omit<Notification, "id" | "created_at">>;
         Relationships: [];
       };
     };

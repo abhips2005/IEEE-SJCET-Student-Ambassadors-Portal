@@ -135,7 +135,7 @@ function TasksPage() {
         </header>
 
         {/* Tabs */}
-        <div className="flex items-center gap-4 border-b border-surface-variant pb-1">
+        <div className="flex items-center gap-2 sm:gap-4 border-b border-surface-variant pb-1 overflow-x-auto no-scrollbar">
           {TABS.map((t, i) => {
             const count =
               i === 0
@@ -148,7 +148,7 @@ function TasksPage() {
                 key={t}
                 onClick={() => setTab(i)}
                 className={cn(
-                  "px-4 py-3 font-label-md text-label-md transition-colors rounded-t-lg",
+                  "px-2 sm:px-4 py-3 font-label-sm sm:font-label-md text-label-sm sm:text-label-md transition-colors rounded-t-lg whitespace-nowrap",
                   tab === i
                     ? "text-primary border-b-2 border-primary"
                     : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low",

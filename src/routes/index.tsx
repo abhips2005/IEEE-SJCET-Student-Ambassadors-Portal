@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Icon } from "@/components/Icon";
+import { usePublicLeaderboard } from "@/hooks/use-profiles";
+import { DEPT_MAP } from "@/lib/constants";
 import {
   CONFERENCE_URL,
   HERO_URL,
@@ -248,6 +250,9 @@ function Landing() {
             </div>
           </section>
 
+          {/* ── Public Leaderboard ──────────────────────────── */}
+          <PublicLeaderboardSection />
+
           <section className="w-full relative min-h-[340px] py-16 lg:h-[500px] overflow-hidden">
             <div
               className="absolute inset-0 bg-cover bg-center"
@@ -295,5 +300,131 @@ function Landing() {
       </footer>
 
     </div>
+  );
+}
+
+function PublicLeaderboardSection() {
+  const { data, isLoading } = usePublicLeaderboard();
+
+  if (isLoading || !data) {
+    return (
+      <section className="w-full py-16 bg-surface-container-low">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-[40px]">
+          <div className="animate-pulse space-y-4">
+            <div className="h-8 bg-surface-container rounded w-64 mx-auto" />
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="h-64 bg-surface-container rounded-xl" />
+              <div className="h-64 bg-surface-container rounded-xl" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const topClass = data.class ?? [];
+  const topDept = data.dept?.[0];
+
+  if (topClass.length === 0 && !topDept) return null;
+
+  return (
+    <section id="leaderboard" className="w-full py-16 bg-surface-container-low/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-[40px]">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-1 px-3 py-1 bg-primary-fixed rounded-full text-on-primary-fixed font-label-sm text-label-sm uppercase tracking-wider mb-4">
+            <Icon name="leaderboard" className="text-[16px]" />
+            <span>Top Ambassadors</span>
+          </div>
+          <h2 className="text-headline-lg text-on-surface">Our Rising Stars</h2>
+          <p className="text-body-md text-on-surface-variant mt-2 max-w-2xl mx-auto">
+            Recognizing our most active and dedicated ambassadors making a difference.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Top 5 Class Ambassadors */}
+          <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 border border-outline-variant/50 shadow-sm">
+            <div className="flex items-center gap-2 mb-4">
+              <Icon name="school" className="text-primary" />
+              <h3 className="text-headline-md text-on-surface">Class Ambassadors</h3>
+            </div>
+            <div className="space-y-3">
+              {topClass.map((p, i) => {
+                const initials = (p.full_name || "?").split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+                const medals = ["🥇", "🥈", "🥉"];
+                return (
+                  <div
+                    key={p.id}
+                    className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-surface-container/50 transition-colors"
+                  >
+                    <span className="w-8 text-center font-bold text-on-surface-variant shrink-0">
+                      {i < 3 ? medals[i] : <span className="text-body-md">{i + 1}</span>}
+                    </span>
+                    {p.avatar_url ? (
+                      <img alt={p.full_name} className="w-10 h-10 rounded-full object-cover shrink-0 ring-2 ring-surface-variant" src={p.avatar_url} />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-label-sm font-bold shrink-0">
+                        {initials}
+                      </div>
+                    )}
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <span className="text-body-md text-on-surface font-semibold truncate">{p.full_name}</span>
+                      <span className="font-label-sm text-label-sm text-on-surface-variant">
+                        {DEPT_MAP[p.department] || p.department} · Sem {p.semester}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1 text-primary font-bold shrink-0">
+                      <Icon name="stars" className="text-[16px]" />
+                      <span className="text-body-md">{p.points.toLocaleString()}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Top Dept Ambassador */}
+          <div className="bg-surface-container-lowest rounded-2xl p-5 sm:p-6 border border-outline-variant/50 shadow-sm flex flex-col">
+            <div className="flex items-center gap-2 mb-4">
+              <Icon name="domain" className="text-secondary" />
+              <h3 className="text-headline-md text-on-surface">Department Ambassador</h3>
+            </div>
+            {topDept ? (
+              <div className="flex-1 flex flex-col items-center justify-center text-center py-6">
+                <div className="relative mb-4">
+                  {topDept.avatar_url ? (
+                    <img
+                      alt={topDept.full_name}
+                      className="w-24 h-24 rounded-full object-cover ring-4 ring-secondary/30"
+                      src={topDept.avatar_url}
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary text-2xl font-bold ring-4 ring-secondary/30">
+                      {(topDept.full_name || "?").split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="absolute -top-1 -right-1 text-2xl">🏆</span>
+                </div>
+                <h4 className="text-headline-md text-on-surface font-bold">{topDept.full_name}</h4>
+                <p className="text-body-md text-on-surface-variant mt-1">
+                  {DEPT_MAP[topDept.department] || topDept.department}
+                </p>
+                {topDept.ambassador_id && (
+                  <p className="font-label-sm text-label-sm text-secondary font-mono mt-1">{topDept.ambassador_id}</p>
+                )}
+                <div className="flex items-center gap-1 text-secondary font-bold mt-3 text-headline-md">
+                  <Icon name="stars" className="text-[20px]" />
+                  {topDept.points.toLocaleString()} pts
+                </div>
+              </div>
+            ) : (
+              <div className="flex-1 flex items-center justify-center text-on-surface-variant opacity-50">
+                <p className="text-body-md">No department ambassadors yet</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }

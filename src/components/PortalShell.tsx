@@ -16,6 +16,7 @@ import {
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: "dashboard", mobileIcon: "grid_view", short: "Dashboard" },
   { to: "/tasks", label: "Tasks", icon: "assignment", mobileIcon: "task_alt", short: "Tasks" },
+  { to: "/point-activity", label: "Point Activity", icon: "history", mobileIcon: "history", short: "Activity" },
   { to: "/leaderboard", label: "Leaderboard", icon: "leaderboard", mobileIcon: "leaderboard", short: "Ranking" },
   { to: "/member-addition", label: "Add Member", icon: "person_add", mobileIcon: "person_add", short: "Add Mbr" },
   { to: "/queries", label: "Queries", icon: "help", mobileIcon: "help_outline", short: "Queries" },
@@ -204,7 +205,7 @@ export function PortalShell({
         </div>
 
         <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface/95 backdrop-blur-xl border-t border-outline-variant z-50 grid grid-cols-4 items-center h-16 pb-safe shadow-[0_-1px_8px_rgba(0,0,0,0.04)]">
-          {NAV.map((item) => {
+          {NAV.slice(0, 3).map((item) => {
             const active = pathname === item.to;
             return (
               <Link
@@ -216,12 +217,40 @@ export function PortalShell({
                 )}
               >
                 <Icon name={item.mobileIcon} />
-                <span className={cn("font-label-sm text-label-sm", active && "font-bold")}>
+                <span className={cn("font-label-sm text-[10px]", active && "font-bold")}>
                   {item.short}
                 </span>
               </Link>
             );
           })}
+          
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="flex h-full flex-col items-center justify-center gap-1 transition-colors text-on-surface-variant active:scale-95 outline-none">
+                <Icon name="more_horiz" />
+                <span className="font-label-sm text-[10px]">More</span>
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 mb-2">
+              {NAV.slice(3).map((item) => {
+                const active = pathname === item.to;
+                return (
+                  <DropdownMenuItem key={item.to} asChild>
+                    <Link
+                      to={item.to}
+                      className={cn(
+                        "flex items-center gap-3 py-3 w-full cursor-pointer",
+                        active && "text-primary font-bold"
+                      )}
+                    >
+                      <Icon name={item.icon} className="text-[18px]" />
+                      {item.label}
+                    </Link>
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
       </div>
     </AuthGuard>

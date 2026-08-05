@@ -207,7 +207,12 @@ export function useApproveMemberAddition() {
       });
       if (ptErr) throw ptErr;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["member-additions"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["member-additions"] });
+      qc.invalidateQueries({ queryKey: ["leaderboard"] });
+      qc.invalidateQueries({ queryKey: ["profile"] });
+      qc.invalidateQueries({ queryKey: ["profiles"] });
+    },
   });
 }
 

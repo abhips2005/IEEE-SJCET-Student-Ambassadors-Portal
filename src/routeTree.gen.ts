@@ -15,6 +15,7 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as LeaderboardRouteImport } from './routes/leaderboard'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as MemberAdditionRouteImport } from './routes/member-addition'
+import { Route as PointActivityRouteImport } from './routes/point-activity'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as QueriesRouteImport } from './routes/queries'
 import { Route as RegisterRouteImport } from './routes/register'
@@ -57,6 +58,11 @@ const LoginRoute = LoginRouteImport.update({
 const MemberAdditionRoute = MemberAdditionRouteImport.update({
   id: '/member-addition',
   path: '/member-addition',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PointActivityRoute = PointActivityRouteImport.update({
+  id: '/point-activity',
+  path: '/point-activity',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
   '/member-addition': typeof MemberAdditionRoute
+  '/point-activity': typeof PointActivityRoute
   '/profile': typeof ProfileRoute
   '/queries': typeof QueriesRoute
   '/register': typeof RegisterRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
   '/member-addition': typeof MemberAdditionRoute
+  '/point-activity': typeof PointActivityRoute
   '/profile': typeof ProfileRoute
   '/queries': typeof QueriesRoute
   '/register': typeof RegisterRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/leaderboard': typeof LeaderboardRoute
   '/login': typeof LoginRoute
   '/member-addition': typeof MemberAdditionRoute
+  '/point-activity': typeof PointActivityRoute
   '/profile': typeof ProfileRoute
   '/queries': typeof QueriesRoute
   '/register': typeof RegisterRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/login'
     | '/member-addition'
+    | '/point-activity'
     | '/profile'
     | '/queries'
     | '/register'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/login'
     | '/member-addition'
+    | '/point-activity'
     | '/profile'
     | '/queries'
     | '/register'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/login'
     | '/member-addition'
+    | '/point-activity'
     | '/profile'
     | '/queries'
     | '/register'
@@ -262,6 +274,7 @@ export interface RootRouteChildren {
   LeaderboardRoute: typeof LeaderboardRoute
   LoginRoute: typeof LoginRoute
   MemberAdditionRoute: typeof MemberAdditionRoute
+  PointActivityRoute: typeof PointActivityRoute
   ProfileRoute: typeof ProfileRoute
   QueriesRoute: typeof QueriesRoute
   RegisterRoute: typeof RegisterRoute
@@ -319,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/member-addition'
       fullPath: '/member-addition'
       preLoaderRoute: typeof MemberAdditionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/point-activity': {
+      id: '/point-activity'
+      path: '/point-activity'
+      fullPath: '/point-activity'
+      preLoaderRoute: typeof PointActivityRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -422,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   LeaderboardRoute: LeaderboardRoute,
   LoginRoute: LoginRoute,
   MemberAdditionRoute: MemberAdditionRoute,
+  PointActivityRoute: PointActivityRoute,
   ProfileRoute: ProfileRoute,
   QueriesRoute: QueriesRoute,
   RegisterRoute: RegisterRoute,
