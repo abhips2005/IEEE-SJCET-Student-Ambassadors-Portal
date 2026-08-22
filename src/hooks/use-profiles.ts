@@ -327,3 +327,32 @@ export function useSubmitReview() {
   });
 }
 
+/** Reviewer: reject a submission (ambassador can re-submit) */
+export function useReviewerReject() {
+  const qc = useQueryClient();
+  const { user } = useAuth();
+  return useMutation({
+    mutationFn: async ({
+      assignmentId,
+      reviewerRemarks,
+    }: {
+      assignmentId: string;
+      reviewerRemarks: string;
+    }) => {
+      if (!user) throw new Error("Not authenticated");
+      const { error } = await (supabase.from("task_assignments") as any)
+        .update({
+          status: "rejected",
+          reviewer_id: user.id,
+          reviewer_remarks: reviewerRemarks,
+          reviewed_at: new Date().toISOString(),
+          reviewed_by: user.id,
+        })
+        .eq("id", assignmentId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["reviewer-submissions"] });
+    },
+  });
+}

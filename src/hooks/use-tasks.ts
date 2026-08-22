@@ -80,7 +80,7 @@ export function useAllAssignments(statusFilter?: string) {
     queryFn: async () => {
       let q = supabase
         .from("task_assignments")
-        .select("*, task:tasks(*), user:profiles!task_assignments_user_id_fkey(id, full_name, avatar_url, department)")
+        .select("*, task:tasks(*), user:profiles!task_assignments_user_id_fkey(id, full_name, avatar_url, department), reviewer:profiles!task_assignments_reviewer_id_fkey(full_name, ambassador_id)")
         .order("claimed_at", { ascending: false });
       if (statusFilter) q = q.eq("status", statusFilter);
       const { data, error } = await q;
@@ -125,6 +125,34 @@ export function useSubmitProof() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["my-assignments"] });
       qc.invalidateQueries({ queryKey: ["all-assignments"] });
+    },
+  });
+}
+
+/** Re-submit proof for a rejected task (reset to submitted, clear reviewer fields) */
+export function useResubmitProof() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ assignmentId, proofText }: { assignmentId: string; proofText: string }) => {
+      const { error } = await (supabase
+        .from("task_assignments") as any)
+        .update({
+          status: "submitted",
+          proof_text: proofText,
+          submitted_at: new Date().toISOString(),
+          reviewer_id: null,
+          reviewer_remarks: null,
+          reviewer_points_suggested: null,
+          reviewed_at: null,
+          reviewed_by: null,
+        })
+        .eq("id", assignmentId);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["my-assignments"] });
+      qc.invalidateQueries({ queryKey: ["all-assignments"] });
+      qc.invalidateQueries({ queryKey: ["reviewer-submissions"] });
     },
   });
 }

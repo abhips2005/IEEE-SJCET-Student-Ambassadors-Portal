@@ -1,5 +1,4 @@
-export const LOGO_URL =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuAF_au_BAj-_VuV9Pr-KVBPdVUNP9oniuHlR7yfRbnoIp4K5S1e_gRQx9oe0_0A58GknjXkruARGW6pHzeTntIcEZGTZzNdD10G8OrxZpQKJvRHbTwLBGSxApon2B-TA7TfArTg2fxF61XbMi1wI8VBsP3tJPD_-ljRyc4X16ecpBUumAs8akVNs-SkDlQybmEiJAdRX0q4skVbUxFq6jFIyQXShIq9f6Hc1-sYgFVdm0GKzNJL4ieD";
+export const LOGO_URL = "public/ieee_new_logo.png";
 
 export const AVATAR_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuCLmqGhKixG25tO-233-2dkdoWNb5w1lGJTnOqVWo6hVe1SNDyM52vgiKimoZ7x3_fVNSEFmxHl2v7FfzigjDMzBWl43_IgGje664Cr5-BRvrzc8jar5obkdgraSlVosfnFDQBBxv_viP28gjPt8XXbgG-OvtYN33o9rRUIEYqFO3bRf6v8WkVC09pad1-Q4UUm7ZUy0GJXt6eoO_rpVigl_kiDTGc8PDDxqQvjVmTJz9rCQnCJZnte";

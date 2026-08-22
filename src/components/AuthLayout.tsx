@@ -10,10 +10,6 @@ export function AuthLayout({ children }: { children: ReactNode }) {
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 md:px-6 md:py-6">
           <Link to="/" className="flex min-w-0 items-center gap-3">
             <img alt="IEEE logo" className="h-7 w-auto shrink-0 object-contain md:h-8" src={LOGO_URL} />
-            <span className="truncate text-headline-md font-semibold text-primary tracking-tight">
-              <span className="md:hidden">Ambassador Portal</span>
-              <span className="hidden md:inline">Student Ambassador Portal</span>
-            </span>
           </Link>
           <nav className="flex shrink-0 gap-1 sm:gap-4 items-center font-label-md text-label-md">
             <Link
@@ -85,12 +81,6 @@ export function AuthLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </main>
-
-      <footer className="w-full px-4 py-6 text-center opacity-60 md:fixed md:bottom-0 md:z-50 md:pointer-events-none">
-        <p className="font-label-sm text-label-sm text-on-surface-variant">
-          © 2024 IEEE Student Ambassador Program. Fostering future technical leaders.
-        </p>
-      </footer>
     </div>
   );
 }

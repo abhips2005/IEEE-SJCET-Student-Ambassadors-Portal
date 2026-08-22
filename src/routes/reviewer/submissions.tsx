@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ReviewerShell } from "@/components/ReviewerShell";
 import { ReviewerGuard } from "@/components/AuthGuard";
 import { Icon } from "@/components/Icon";
-import { useReviewerSubmissions, useSubmitReview } from "@/hooks/use-profiles";
+import { useReviewerSubmissions, useSubmitReview, useReviewerReject } from "@/hooks/use-profiles";
 import { DEPT_MAP } from "@/lib/constants";
 import { toast } from "sonner";
 import { format } from "date-fns";
@@ -27,10 +27,12 @@ function ReviewerSubmissionsPage() {
 function ReviewerSubmissionsInner() {
   const { data: submissions, isLoading } = useReviewerSubmissions();
   const submitReview = useSubmitReview();
+  const rejectSubmission = useReviewerReject();
   const [selected, setSelected] = useState<any | null>(null);
   const [remarks, setRemarks] = useState("");
   const [suggestedPoints, setSuggestedPoints] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [rejectMode, setRejectMode] = useState(false);
 
   const handleSubmitReview = async () => {
     if (!selected || !remarks.trim()) return;
@@ -42,14 +44,36 @@ function ReviewerSubmissionsInner() {
         reviewerPointsSuggested: parseInt(suggestedPoints, 10) || selected.task?.points_reward || 0,
       });
       toast.success("Review submitted to admin for final approval.");
-      setSelected(null);
-      setRemarks("");
-      setSuggestedPoints("");
+      closeModal();
     } catch (err: any) {
       toast.error(err.message || "Failed to submit review");
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleReject = async () => {
+    if (!selected || !remarks.trim()) return;
+    setSubmitting(true);
+    try {
+      await rejectSubmission.mutateAsync({
+        assignmentId: selected.id,
+        reviewerRemarks: remarks,
+      });
+      toast.success("Submission rejected. Ambassador can revise and re-submit.");
+      closeModal();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to reject submission");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const closeModal = () => {
+    setSelected(null);
+    setRemarks("");
+    setSuggestedPoints("");
+    setRejectMode(false);
   };
 
   return (
@@ -58,7 +82,7 @@ function ReviewerSubmissionsInner() {
         <header className="flex flex-col gap-2">
           <h1 className="text-headline-lg-mobile lg:text-headline-lg text-on-surface">Task Submissions</h1>
           <p className="text-body-md text-on-surface-variant">
-            Review submissions from ambassadors in your assigned department(s).
+            Review submissions from ambassadors in your assigned department(s). Approve to forward to admin, or reject to let the ambassador revise.
           </p>
         </header>
 
@@ -81,6 +105,7 @@ function ReviewerSubmissionsInner() {
                   setSelected(s);
                   setSuggestedPoints(String(s.task?.points_reward || 0));
                   setRemarks("");
+                  setRejectMode(false);
                 }}
                 className="w-full flex items-start sm:items-center gap-3 px-4 py-4 border-b border-outline-variant/40 last:border-0 hover:bg-surface-container/50 transition-colors text-left"
               >
@@ -117,7 +142,7 @@ function ReviewerSubmissionsInner() {
           <div className="bg-surface rounded-2xl p-5 sm:p-6 max-w-lg w-full shadow-2xl my-auto">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-headline-md text-on-surface">Review Submission</h3>
-              <button onClick={() => setSelected(null)} className="p-2 hover:bg-surface-container rounded-lg">
+              <button onClick={closeModal} className="p-2 hover:bg-surface-container rounded-lg">
                 <Icon name="close" />
               </button>
             </div>
@@ -138,24 +163,54 @@ function ReviewerSubmissionsInner() {
               </div>
             </div>
 
+            {/* Approve/Reject toggle */}
+            <div className="flex gap-2 mb-4 bg-surface-container rounded-xl p-1">
+              <button
+                onClick={() => setRejectMode(false)}
+                className={cn(
+                  "flex-1 px-4 py-2 rounded-lg font-label-md text-label-md transition-all",
+                  !rejectMode
+                    ? "bg-primary text-on-primary shadow-sm"
+                    : "text-on-surface-variant hover:text-on-surface",
+                )}
+              >
+                Approve & Forward
+              </button>
+              <button
+                onClick={() => setRejectMode(true)}
+                className={cn(
+                  "flex-1 px-4 py-2 rounded-lg font-label-md text-label-md transition-all",
+                  rejectMode
+                    ? "bg-error text-on-error shadow-sm"
+                    : "text-on-surface-variant hover:text-on-surface",
+                )}
+              >
+                Reject
+              </button>
+            </div>
+
             <div className="space-y-3">
+              {!rejectMode && (
+                <div>
+                  <label className="font-label-md text-label-md text-on-surface block mb-1">Points to Suggest</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max={selected.task?.points_reward * 2 || 500}
+                    className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
+                    value={suggestedPoints}
+                    onChange={(e) => setSuggestedPoints(e.target.value)}
+                  />
+                  <p className="text-[11px] text-on-surface-variant mt-1">Max: {selected.task?.points_reward} pts (admin may override)</p>
+                </div>
+              )}
               <div>
-                <label className="font-label-md text-label-md text-on-surface block mb-1">Points to Award</label>
-                <input
-                  type="number"
-                  min="0"
-                  max={selected.task?.points_reward * 2 || 500}
-                  className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-2.5 px-4 focus:outline-none focus:ring-2 focus:ring-primary"
-                  value={suggestedPoints}
-                  onChange={(e) => setSuggestedPoints(e.target.value)}
-                />
-                <p className="text-[11px] text-on-surface-variant mt-1">Max: {selected.task?.points_reward} pts (admin may override)</p>
-              </div>
-              <div>
-                <label className="font-label-md text-label-md text-on-surface block mb-1">Reviewer Remarks <span className="text-error">*</span></label>
+                <label className="font-label-md text-label-md text-on-surface block mb-1">
+                  {rejectMode ? "Reason for Rejection" : "Reviewer Remarks"} <span className="text-error">*</span>
+                </label>
                 <textarea
                   className="w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg p-3 min-h-[100px] resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Your assessment of this submission..."
+                  placeholder={rejectMode ? "Explain why this submission needs revision..." : "Your assessment of this submission..."}
                   required
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
@@ -164,17 +219,28 @@ function ReviewerSubmissionsInner() {
             </div>
 
             <div className="flex flex-col sm:flex-row justify-end gap-2 mt-4">
-              <button onClick={() => setSelected(null)} className="px-4 py-2 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md transition-colors">
+              <button onClick={closeModal} className="px-4 py-2 text-on-surface-variant hover:bg-surface-container rounded-lg font-label-md text-label-md transition-colors">
                 Cancel
               </button>
-              <button
-                onClick={handleSubmitReview}
-                disabled={submitting || !remarks.trim()}
-                className="px-5 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:shadow-md transition-all disabled:opacity-50 flex items-center gap-2"
-              >
-                {submitting && <Icon name="progress_activity" className="animate-spin text-[18px]" />}
-                Submit to Admin
-              </button>
+              {rejectMode ? (
+                <button
+                  onClick={handleReject}
+                  disabled={submitting || !remarks.trim()}
+                  className="px-5 py-2 bg-error text-on-error font-label-md text-label-md rounded-lg hover:shadow-md transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                  {submitting && <Icon name="progress_activity" className="animate-spin text-[18px]" />}
+                  Reject Submission
+                </button>
+              ) : (
+                <button
+                  onClick={handleSubmitReview}
+                  disabled={submitting || !remarks.trim()}
+                  className="px-5 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg hover:shadow-md transition-all disabled:opacity-50 flex items-center gap-2"
+                >
+                  {submitting && <Icon name="progress_activity" className="animate-spin text-[18px]" />}
+                  Submit to Admin
+                </button>
+              )}
             </div>
           </div>
         </div>

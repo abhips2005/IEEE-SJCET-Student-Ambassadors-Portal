@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Icon } from "@/components/Icon";
 import { PortalShell } from "@/components/PortalShell";
 import { cn } from "@/lib/utils";
-import { useTasks, useMyAssignments, useClaimTask, useSubmitProof } from "@/hooks/use-tasks";
+import { useTasks, useMyAssignments, useClaimTask, useSubmitProof, useResubmitProof } from "@/hooks/use-tasks";
 import { useAuth } from "@/lib/auth-context";
 import { format, isPast } from "date-fns";
 import { toast } from "sonner";
@@ -58,6 +58,9 @@ function TasksPage() {
   const { data: assignments, isLoading: loadingAssignments } = useMyAssignments();
   const claimTask = useClaimTask();
   const submitProof = useSubmitProof();
+  const resubmitProof = useResubmitProof();
+  const [resubmitModal, setResubmitModal] = useState<{ assignmentId: string; taskTitle: string; reviewerRemarks: string | null } | null>(null);
+  const [resubmitText, setResubmitText] = useState("");
 
   const myClaimedTaskIds = new Set(assignments?.map((a) => a.task_id) ?? []);
 
@@ -78,7 +81,7 @@ function TasksPage() {
       return true;
     }) ?? [];
   const inProgressAssignments =
-    assignments?.filter((a) => a.status === "claimed" || a.status === "submitted") ?? [];
+    assignments?.filter((a) => a.status === "claimed" || a.status === "submitted" || a.status === "reviewer_approved") ?? [];
   const completedAssignments =
     assignments?.filter((a) => a.status === "approved" || a.status === "rejected") ?? [];
 
@@ -292,15 +295,31 @@ function TasksPage() {
                     )}
                     {tab === 1 && assignment?.status === "submitted" && (
                       <span className="px-3 py-1.5 rounded-full border border-primary text-primary font-label-sm text-label-sm">
-                        Awaiting Review
+                        Awaiting Reviewer
+                      </span>
+                    )}
+                    {tab === 1 && assignment?.status === "reviewer_approved" && (
+                      <span className="px-3 py-1.5 rounded-full border border-secondary text-secondary font-label-sm text-label-sm flex items-center gap-1">
+                        <Icon name="verified" className="text-[14px]" />
+                        Under Admin Review
                       </span>
                     )}
                     {tab === 2 && assignment && (
-                      <span
-                        className={`px-3 py-1.5 rounded-full border font-label-sm text-label-sm ${assignment.status === "approved" ? "border-secondary text-secondary" : "border-error text-error"}`}
-                      >
-                        {assignment.status === "approved" ? "Approved ✓" : "Rejected"}
-                      </span>
+                      <>
+                        <span
+                          className={`px-3 py-1.5 rounded-full border font-label-sm text-label-sm ${assignment.status === "approved" ? "border-secondary text-secondary" : "border-error text-error"}`}
+                        >
+                          {assignment.status === "approved" ? "Approved ✓" : "Rejected"}
+                        </span>
+                        {assignment.status === "rejected" && (
+                          <button
+                            onClick={() => setResubmitModal({ assignmentId: assignment.id, taskTitle: task.title, reviewerRemarks: assignment.reviewer_remarks })}
+                            className="px-3 py-1.5 bg-primary/10 text-primary font-label-sm text-label-sm rounded-full hover:bg-primary hover:text-on-primary transition-colors"
+                          >
+                            Re-submit
+                          </button>
+                        )}
+                      </>
                     )}
                   </div>
                 </article>
@@ -340,6 +359,63 @@ function TasksPage() {
                 className="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:shadow-md transition-all disabled:opacity-50"
               >
                 {submitProof.isPending ? "Submitting..." : "Submit"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Re-submit modal for rejected tasks */}
+      {resubmitModal && (
+        <div className="fixed inset-0 bg-on-surface/50 z-[100] flex items-center justify-center px-4">
+          <div className="bg-surface rounded-2xl p-6 max-w-lg w-full shadow-2xl">
+            <h3 className="text-headline-md text-on-surface mb-1">Re-submit Proof</h3>
+            <p className="text-body-sm text-on-surface-variant mb-3">
+              Revise your submission for "{resubmitModal.taskTitle}"
+            </p>
+            {resubmitModal.reviewerRemarks && (
+              <div className="bg-error/5 border-l-2 border-error rounded-lg p-3 mb-4">
+                <p className="font-label-sm text-label-sm text-error uppercase tracking-wider mb-1">
+                  Reviewer Feedback
+                </p>
+                <p className="text-body-sm text-on-surface">{resubmitModal.reviewerRemarks}</p>
+              </div>
+            )}
+            <textarea
+              className="w-full bg-surface-container-lowest border border-outline-variant rounded-lg p-3 text-body-md text-on-surface min-h-[120px] focus:outline-none focus:ring-2 focus:ring-primary"
+              placeholder="Revise your proof based on the feedback above..."
+              value={resubmitText}
+              onChange={(e) => setResubmitText(e.target.value)}
+            />
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={() => {
+                  setResubmitModal(null);
+                  setResubmitText("");
+                }}
+                className="px-4 py-2 font-label-md text-label-md text-on-surface-variant hover:bg-surface-container rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (!resubmitText.trim()) return;
+                  try {
+                    await resubmitProof.mutateAsync({
+                      assignmentId: resubmitModal.assignmentId,
+                      proofText: resubmitText.trim(),
+                    });
+                    toast.success("Proof re-submitted for review!");
+                    setResubmitModal(null);
+                    setResubmitText("");
+                  } catch (err: any) {
+                    toast.error(err.message || "Failed to re-submit");
+                  }
+                }}
+                disabled={!resubmitText.trim() || resubmitProof.isPending}
+                className="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg shadow-sm hover:shadow-md transition-all disabled:opacity-50"
+              >
+                {resubmitProof.isPending ? "Submitting..." : "Re-submit"}
               </button>
             </div>
           </div>

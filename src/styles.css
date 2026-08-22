@@ -171,3 +171,16 @@
     display: none;
   }
 }
+
+@keyframes slow-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+img[src*="ieee_new_logo.png"] {
+  animation: slow-spin 20s linear infinite;
+}

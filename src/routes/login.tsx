@@ -74,6 +74,8 @@ function LoginPage() {
       toast.success("Welcome back!");
       if (profile?.role === "admin") {
         navigate({ to: "/admin" });
+      } else if (profile?.role === "reviewer") {
+        navigate({ to: "/reviewer" });
       } else {
         navigate({ to: "/dashboard" });
       }

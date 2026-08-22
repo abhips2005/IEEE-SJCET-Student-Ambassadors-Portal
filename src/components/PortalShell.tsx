@@ -102,6 +102,25 @@ export function PortalShell({
                 </Link>
               </>
             )}
+            {profile?.role === "reviewer" && (
+              <>
+                <div className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest px-4 mb-2 mt-6">
+                  Reviewer
+                </div>
+                <Link
+                  to="/reviewer"
+                  className={cn(
+                    "flex items-center gap-4 px-6 py-3 rounded-xl transition-all font-label-md text-label-md",
+                    pathname.startsWith("/reviewer")
+                      ? "bg-primary text-on-primary shadow-lg"
+                      : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface",
+                  )}
+                >
+                  <Icon name="rate_review" />
+                  Reviewer Panel
+                </Link>
+              </>
+            )}
           </nav>
           <div className="p-6 mt-auto space-y-2">
             <div className="bg-surface-container rounded-xl p-4 flex items-center gap-4">
@@ -162,6 +181,15 @@ export function PortalShell({
                   title="Switch to Admin View"
                 >
                   <Icon name="admin_panel_settings" />
+                </Link>
+              )}
+              {profile?.role === "reviewer" && (
+                <Link
+                  to="/reviewer"
+                  className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95"
+                  title="Switch to Reviewer View"
+                >
+                  <Icon name="rate_review" />
                 </Link>
               )}
               <NotificationBell />

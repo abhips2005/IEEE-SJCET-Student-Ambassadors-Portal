@@ -77,9 +77,8 @@ function AdminTasksPage() {
   const [formTargetRole, setFormTargetRole] = useState<"all" | "class_ambassador" | "dept_ambassador">("all");
 
   const { data: tasks, isLoading } = useTasks();
-  const { data: submittedItems } = useAllAssignments("submitted");
   const { data: reviewerApprovedItems } = useAllAssignments("reviewer_approved");
-  const submissions = [...(submittedItems ?? []), ...(reviewerApprovedItems ?? [])];
+  const submissions = reviewerApprovedItems ?? [];
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
@@ -229,7 +228,7 @@ function AdminTasksPage() {
                 : "text-on-surface-variant hover:text-on-surface",
             )}
           >
-            Pending Reviews
+            Reviewer Approved
             {pendingSubmissions.length > 0 && (
               <span className="bg-error text-on-error px-2 py-0.5 rounded-full text-[10px] font-bold">
                 {pendingSubmissions.length}
@@ -263,11 +262,10 @@ function AdminTasksPage() {
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <h3 className="text-body-lg font-semibold text-on-surface">{sub.task?.title || "Unknown Task"}</h3>
-                        {sub.status === "reviewer_approved" && (
-                          <span className="font-label-sm text-[10px] bg-secondary/10 text-secondary px-1.5 py-0.5 rounded-full shrink-0">
-                            Reviewer ✓
-                          </span>
-                        )}
+                        <span className="font-label-sm text-[10px] bg-secondary/10 text-secondary px-1.5 py-0.5 rounded-full shrink-0 flex items-center gap-1">
+                          <Icon name="verified" className="text-[12px]" />
+                          {sub.reviewer?.full_name ? `Reviewed by ${sub.reviewer.full_name}` : "Reviewer ✓"}
+                        </span>
                       </div>
                       <div className="flex items-center gap-2 mt-1">
                         {sub.user?.avatar_url ? (
