@@ -63,7 +63,7 @@ export function PortalShell({
           </div>
           <nav className="flex-1 px-4 flex flex-col gap-1">
             <div className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest px-4 mb-2">
-              Volunteer
+              Ambassador
             </div>
             {NAV.map((item) => {
               const active = pathname === item.to;

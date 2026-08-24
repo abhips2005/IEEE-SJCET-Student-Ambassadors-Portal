@@ -90,7 +90,7 @@ export function AdminShell({
               className="flex items-center gap-3 px-6 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md transition-colors"
             >
               <Icon name="swap_horiz" />
-              Volunteer View
+              Ambassador View
             </Link>
             <button
               onClick={handleSignOut}
@@ -113,7 +113,7 @@ export function AdminShell({
               <Link
                 to="/dashboard"
                 className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors active:scale-95"
-                title="Switch to Volunteer View"
+                title="Switch to Ambassador View"
               >
                 <Icon name="swap_horiz" />
               </Link>

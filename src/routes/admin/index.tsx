@@ -16,12 +16,12 @@ export const Route = createFileRoute("/admin/")({
       {
         name: "description",
         content:
-          "Admin command center: volunteer growth, task completion analytics, pending reviews and live ambassador activity.",
+          "Admin command center: ambassador growth, task completion analytics, pending reviews and live ambassador activity.",
       },
       { property: "og:title", content: "Admin Overview | IEEE Ambassador Portal" },
       {
         property: "og:description",
-        content: "Monitor volunteers, tasks, points and live activity from the admin command center.",
+        content: "Monitor ambassadors, tasks, points and live activity from the admin command center.",
       },
     ],
   }),
@@ -113,7 +113,7 @@ function AdminOverviewPage() {
             <div className="col-span-2 bg-surface-container-lowest rounded-xl p-4 shadow-[0_4px_12px_rgba(0,0,0,0.05)] border border-outline-variant/50 flex flex-col gap-1">
               <p className="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
                 <Icon name="group" className="text-[16px]" />
-                Total Volunteers
+                Total Ambassadors
               </p>
               <div className="flex items-end justify-between gap-2">
                 {loadingStats ? (

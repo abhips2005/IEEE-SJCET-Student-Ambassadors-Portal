@@ -83,12 +83,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Join the IEEE Student Ambassador program: manage volunteer tasks, earn points and lead your campus community.",
+          "Join the IEEE Student Ambassador program: manage ambassador tasks, earn points and lead your campus community.",
       },
       { property: "og:title", content: "IEEE Student Ambassador Portal" },
       {
         property: "og:description",
-        content: "Volunteer tasks, points and recognition for IEEE student ambassadors.",
+        content: "Ambassador tasks, points and recognition for IEEE student ambassadors.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

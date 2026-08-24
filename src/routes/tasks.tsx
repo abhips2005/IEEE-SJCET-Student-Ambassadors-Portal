@@ -12,14 +12,14 @@ export const Route = createFileRoute("/tasks")({
   component: TasksPage,
   head: () => ({
     meta: [
-      { title: "Volunteer Tasks | IEEE Student Ambassador Portal" },
+      { title: "Ambassador Tasks | IEEE Student Ambassador Portal" },
       {
         name: "description",
         content:
-          "Browse available IEEE ambassador volunteer tasks, track deadlines and earn ambassador points in your region.",
+          "Browse available IEEE ambassador tasks, track deadlines and earn ambassador points in your region.",
       },
-      { property: "og:title", content: "Volunteer Tasks" },
-      { property: "og:description", content: "Find IEEE volunteer tasks and earn ambassador points." },
+      { property: "og:title", content: "Ambassador Tasks" },
+      { property: "og:description", content: "Find IEEE ambassador tasks and earn ambassador points." },
     ],
   }),
 });
@@ -129,7 +129,7 @@ function TasksPage() {
       <div className="flex flex-col w-full gap-6">
         <header className="flex flex-col gap-2">
           <h1 className="text-headline-lg-mobile lg:text-headline-lg text-on-surface">
-            Volunteer Tasks
+            Ambassador Tasks
           </h1>
           <p className="text-body-md text-on-surface-variant max-w-2xl">
             Manage your assignments, track upcoming deadlines, and discover new opportunities to earn
