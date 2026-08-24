@@ -1,4 +1,4 @@
-export const LOGO_URL = "/public/ieee_new_logo.png";
+export const LOGO_URL = "/ieee_new_logo.png";
 
 export const AVATAR_URL =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuCLmqGhKixG25tO-233-2dkdoWNb5w1lGJTnOqVWo6hVe1SNDyM52vgiKimoZ7x3_fVNSEFmxHl2v7FfzigjDMzBWl43_IgGje664Cr5-BRvrzc8jar5obkdgraSlVosfnFDQBBxv_viP28gjPt8XXbgG-OvtYN33o9rRUIEYqFO3bRf6v8WkVC09pad1-Q4UUm7ZUy0GJXt6eoO_rpVigl_kiDTGc8PDDxqQvjVmTJz9rCQnCJZnte";
