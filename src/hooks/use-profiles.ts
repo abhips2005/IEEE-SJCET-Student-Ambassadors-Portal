@@ -141,6 +141,8 @@ export function usePublicLeaderboard() {
           .order("points", { ascending: false })
           .limit(1),
       ]);
+      if (classRes.error) throw classRes.error;
+      if (deptRes.error) throw deptRes.error;
       return {
         class: (classRes.data ?? []) as unknown as Pick<Profile, "id" | "full_name" | "department" | "semester" | "ambassador_id" | "avatar_url" | "points">[],
         dept: (deptRes.data ?? []) as unknown as Pick<Profile, "id" | "full_name" | "department" | "semester" | "ambassador_id" | "avatar_url" | "points">[],

@@ -304,9 +304,9 @@ function Landing() {
 }
 
 function PublicLeaderboardSection() {
-  const { data, isLoading } = usePublicLeaderboard();
+  const { data, isLoading, isError, error } = usePublicLeaderboard();
 
-  if (isLoading || !data) {
+  if (isLoading) {
     return (
       <section className="w-full py-16 bg-surface-container-low">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-[40px]">
@@ -322,8 +322,22 @@ function PublicLeaderboardSection() {
     );
   }
 
-  const topClass = data.class ?? [];
-  const topDept = data.dept?.[0];
+  // RLS or network error — show a subtle notice instead of vanishing
+  if (isError) {
+    console.error("[PublicLeaderboard] Failed to load:", error);
+    return (
+      <section id="leaderboard" className="w-full py-16 bg-surface-container-low/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-[40px] text-center">
+          <p className="text-body-sm text-on-surface-variant opacity-60">
+            Leaderboard temporarily unavailable. Please check back soon.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  const topClass = data?.class ?? [];
+  const topDept = data?.dept?.[0];
 
   if (topClass.length === 0 && !topDept) return null;
 
@@ -428,3 +442,4 @@ function PublicLeaderboardSection() {
     </section>
   );
 }
+
