@@ -14,7 +14,7 @@ export const Route = createFileRoute("/dashboard")({
       {
         name: "description",
         content:
-          "Your ambassador dashboard: announcements, active volunteer tasks, deadlines and points earned.",
+          "Your ambassador dashboard: announcements, active tasks, deadlines and points earned.",
       },
       { property: "og:title", content: "Ambassador Dashboard" },
       { property: "og:description", content: "Track announcements, active tasks and ambassador points." },
@@ -34,7 +34,7 @@ function DashboardPage() {
   const latestAnnouncement = announcements?.[0];
 
   return (
-    <PortalShell eyebrow="Volunteer Portal">
+    <PortalShell eyebrow="Ambassador Portal">
       <div className="flex flex-col w-full gap-6 text-on-surface">
         {/* Welcome banner */}
         <div className="bg-primary text-on-primary rounded-xl p-5 sm:p-6 shadow-md relative overflow-hidden flex flex-col justify-center min-h-[120px]">

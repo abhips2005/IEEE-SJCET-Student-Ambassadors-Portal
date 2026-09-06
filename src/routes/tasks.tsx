@@ -125,7 +125,7 @@ function TasksPage() {
   const getAssignment = (taskId: string) => assignments?.find((a) => a.task_id === taskId);
 
   return (
-    <PortalShell eyebrow="Volunteer Portal" showSearch>
+    <PortalShell eyebrow="Ambassador Portal" showSearch>
       <div className="flex flex-col w-full gap-6">
         <header className="flex flex-col gap-2">
           <h1 className="text-headline-lg-mobile lg:text-headline-lg text-on-surface">
@@ -207,7 +207,7 @@ function TasksPage() {
                 ? "No available tasks right now. Check back later!"
                 : tab === 1
                   ? "No tasks in progress. Claim one from the Available tab!"
-                  : "No completed tasks yet. Start volunteering!"}
+                  : "No completed tasks yet. Start working!"}
             </p>
           </div>
         ) : (

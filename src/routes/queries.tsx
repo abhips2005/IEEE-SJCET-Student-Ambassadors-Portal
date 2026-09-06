@@ -39,7 +39,7 @@ function QueriesPage() {
   const inputClass = "w-full bg-surface-container-lowest border border-outline-variant text-on-surface text-body-md rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-primary transition-all";
 
   return (
-    <PortalShell eyebrow="Volunteer Portal">
+    <PortalShell eyebrow="Ambassador Portal">
       <div className="flex flex-col gap-6">
         <header className="flex flex-col gap-2">
           <h1 className="text-headline-lg-mobile lg:text-headline-lg text-on-surface">My Queries</h1>

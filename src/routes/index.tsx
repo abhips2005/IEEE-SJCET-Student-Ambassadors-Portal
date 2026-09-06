@@ -13,17 +13,17 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "IEEE Student Ambassador Program | Lead Your Campus" },
+      { title: "IEEE Student Ambassador Programme | IEEE SB SJCET" },
       {
         name: "description",
         content:
-          "Become an IEEE Student Ambassador: build leadership skills, join 2,000+ ambassadors worldwide and earn global recognition.",
+          "Welcome to the IEEE Student Ambassador Programme by IEEE SB SJCET. Connect, communicate, and contribute to the IEEE community.",
       },
-      { property: "og:title", content: "IEEE Student Ambassador Program" },
+      { property: "og:title", content: "IEEE Student Ambassador Programme" },
       {
         property: "og:description",
         content:
-          "Empower your student community, gain leadership skills and earn recognition with IEEE.",
+          "Welcome to the IEEE Student Ambassador Programme by IEEE SB SJCET. Connect, communicate, and contribute to the IEEE community.",
       },
       { property: "og:image", content: HERO_URL },
       { name: "twitter:image", content: HERO_URL },
@@ -31,37 +31,51 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-const STATS = [
-  { value: "500+", label: "Active Volunteers" },
-  { value: "1.2k+", label: "Tasks Completed" },
-  { value: "50+", label: "Global Regions" },
-  { value: "10k+", label: "Impacted Students" },
+const ROLES = [
+  { icon: "campaign", title: "Outreach", desc: "Help spread awareness about IEEE events, opportunities and initiatives among students." },
+  { icon: "handshake", title: "Engagement", desc: "Encourage your peers to participate and become more connected with the IEEE community." },
+  { icon: "lightbulb", title: "Initiative", desc: "Bring forward ideas, suggestions and initiatives that can improve student engagement." },
+  { icon: "chat", title: "Communication", desc: "Help communicate important updates and opportunities through your networks." },
+  { icon: "group_work", title: "Participation", desc: "Actively contribute to Ambassador activities, campaigns and initiatives." },
+  { icon: "rocket_launch", title: "Representation", desc: "Represent the spirit of IEEE and the values of collaboration, learning and innovation." },
 ];
 
 const BENEFITS = [
   {
-    icon: "hub",
-    title: "Professional Networking",
-    body: "Connect with industry leaders, distinguished lecturers, and fellow passionate students from across the globe.",
-    cta: "Explore Network",
+    icon: "psychology",
+    title: "Leadership",
+    body: "Take responsibility, coordinate initiatives and turn ideas into action.",
+    cta: "Take the Lead",
   },
   {
-    icon: "trending_up",
-    title: "Skill Development",
-    body: "Hone your leadership, communication, and project management skills by organizing local and regional events.",
-    cta: "View Training",
+    icon: "forum",
+    title: "Communication",
+    body: "Build confidence in communicating with students, teams and professionals.",
+    cta: "Connect",
+  },
+  {
+    icon: "hub",
+    title: "Networking",
+    body: "Connect with people across IEEE and expand your professional circle.",
+    cta: "Grow Network",
+  },
+  {
+    icon: "explore",
+    title: "Exposure",
+    body: "Discover technical events, competitions, workshops and opportunities.",
+    cta: "Explore",
+  },
+  {
+    icon: "work",
+    title: "Experience",
+    body: "Gain practical experience in outreach, coordination, teamwork and community building.",
+    cta: "Gain Experience",
   },
   {
     icon: "workspace_premium",
-    title: "Global Recognition",
-    body: "Earn official certificates, digital badges, and exclusive awards that highlight your dedication on your resume.",
-    cta: "See Awards",
-  },
-  {
-    icon: "library_books",
-    title: "Exclusive Resources",
-    body: "Gain access to premium IEEE publications, technical standards, and career development tools to accelerate your path.",
-    cta: "Browse Library",
+    title: "Recognition",
+    body: "Build meaningful experiences that reflect your contribution to the IEEE community.",
+    cta: "Get Recognized",
   },
 ];
 
@@ -73,16 +87,16 @@ function Landing() {
           <div className="flex min-w-0 items-center gap-2">
             <img alt="IEEE Student Ambassador logo" className="h-8 w-auto shrink-0 object-contain" src={LOGO_URL} />
             <span className="truncate text-headline-md font-semibold text-primary">
-              <span className="sm:hidden">IEEE SA</span>
-              <span className="hidden sm:inline">IEEE Ambassador</span>
+              <span className="sm:hidden">IEEE SJCET</span>
+              <span className="hidden sm:inline">IEEE Ambassador Portal</span>
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-8 font-label-md text-label-md">
             <a className="text-on-surface-variant hover:text-primary transition-colors" href="#benefits">
               Benefits
             </a>
-            <a className="text-on-surface-variant hover:text-primary transition-colors" href="#stats">
-              Stats
+            <a className="text-on-surface-variant hover:text-primary transition-colors" href="#roles">
+              Roles
             </a>
             <Link className="text-on-surface-variant hover:text-primary transition-colors" to="/gallery">
               Gallery
@@ -118,22 +132,22 @@ function Landing() {
             <div className="w-full lg:w-1/2 flex flex-col gap-5 items-start">
               <div className="inline-flex items-center gap-1 px-3 py-1 bg-primary-fixed rounded-full text-on-primary-fixed font-label-sm text-label-sm uppercase tracking-wider">
                 <Icon name="stars" className="text-[16px]" />
-                <span>Global Student Network</span>
+                <span>IEEE SB SJCET</span>
               </div>
               <h1 className="text-display-lg text-on-surface text-balance">
-                Become an
-                <span className="text-primary block mt-1">IEEE Student Ambassador.</span>
+                Welcome to the
+                <span className="text-primary block mt-1">IEEE Student Ambassador Programme.</span>
               </h1>
               <p className="text-body-md sm:text-body-lg text-on-surface-variant max-w-[32rem]">
-                Empower your student community, gain leadership skills, and earn recognition through
-                the world's largest technical professional organization.
+                You applied. You stepped forward. And now, you're officially part of the team.
+                Welcome to the IEEE Student Ambassador Programme by IEEE SB SJCET — a community of students who will help connect IEEE with the wider student community.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto mt-2 font-label-md text-label-md">
                 <Link
                   to="/register"
                   className="bg-primary hover:bg-primary-container text-on-primary px-6 sm:px-8 py-3.5 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-3"
                 >
-                  Register Now
+                  Enter Portal
                   <Icon name="arrow_forward" className="text-[20px]" />
                 </Link>
                 <a
@@ -159,10 +173,10 @@ function Landing() {
                 </div>
                 <div className="flex min-w-0 flex-col">
                   <span className="font-label-md text-label-md text-on-surface font-semibold truncate">
-                    Join 2,000+ Ambassadors
+                    Welcome aboard, Ambassador. 🚀
                   </span>
                   <span className="font-label-sm text-label-sm text-on-surface-variant">
-                    Worldwide network
+                    Connect. Communicate. Contribute.
                   </span>
                 </div>
               </div>
@@ -186,7 +200,7 @@ function Landing() {
                     </div>
                     <div>
                       <p className="font-label-md text-label-md text-on-surface font-semibold">
-                        Shape the Future
+                        Connect. Communicate. Contribute.
                       </p>
                       <p className="font-label-sm text-label-sm text-on-surface-variant">
                         Lead initiatives on your campus
@@ -198,18 +212,22 @@ function Landing() {
             </div>
           </section>
 
-          <section id="stats" className="w-full bg-surface-container-lowest py-10 sm:py-12 relative z-10 border-y border-outline-variant/30">
+          <section id="roles" className="w-full bg-surface-container-lowest py-12 sm:py-16 relative z-10 border-y border-outline-variant/30">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-[40px]">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-5 sm:gap-6 lg:gap-8">
-                {STATS.map((s) => (
-                  <div
-                    key={s.label}
-                    className="flex flex-col items-center md:items-start text-center md:text-left rounded-xl bg-surface-container/60 md:bg-transparent p-4 md:p-0"
-                  >
-                    <span className="text-display-lg text-primary mb-1">{s.value}</span>
-                    <span className="font-label-sm sm:font-label-md text-label-sm sm:text-label-md text-on-surface-variant uppercase tracking-wide">
-                      {s.label}
-                    </span>
+              <div className="flex flex-col items-center text-center mb-8 lg:mb-12">
+                <h2 className="text-headline-lg text-on-surface mb-3">Your Role as an Ambassador</h2>
+                <p className="text-body-md text-on-surface-variant max-w-[42rem]">
+                  As an IEEE Student Ambassador, you will connect, communicate, and contribute to the community.
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
+                {ROLES.map((r) => (
+                  <div key={r.title} className="flex flex-col items-start text-left bg-surface-container/30 p-6 rounded-2xl border border-outline-variant/30 hover:bg-surface-container/60 transition-colors">
+                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+                      <Icon name={r.icon} filled />
+                    </div>
+                    <h3 className="text-title-lg text-on-surface font-semibold mb-2">{r.title}</h3>
+                    <p className="text-body-md text-on-surface-variant">{r.desc}</p>
                   </div>
                 ))}
               </div>
@@ -221,13 +239,13 @@ function Landing() {
             className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-[40px] py-12 lg:py-[100px] relative z-10"
           >
             <div className="flex flex-col items-center text-center mb-8 lg:mb-12 max-w-[42rem] mx-auto">
-              <h2 className="text-headline-lg text-on-surface mb-3 text-balance">Why Become an Ambassador?</h2>
+              <h2 className="text-headline-lg text-on-surface mb-3 text-balance">What’s In It For You?</h2>
               <p className="text-body-md text-on-surface-variant">
-                Unlock a world of opportunities to grow personally and professionally while making a
+                Your Ambassador journey is also an opportunity to grow, unlock a world of opportunities, and make a
                 tangible impact on the engineering community.
               </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 
               {BENEFITS.map((b) => (
                 <div
@@ -266,11 +284,10 @@ function Landing() {
                 src={LOGO_URL}
               />
               <h2 className="text-headline-lg text-on-primary max-w-[48rem] text-balance drop-shadow-md">
-                "Being an ambassador connected me with mentors who changed the trajectory of my
-                career."
+                "A Community, Not Just a Title."
               </h2>
-              <p className="font-label-sm sm:font-label-md text-label-sm sm:text-label-md text-primary-fixed mt-4 tracking-wider uppercase">
-                Sarah J. — Region 8 Ambassador
+              <p className="font-body-lg text-body-lg text-primary-fixed mt-4 max-w-[36rem] text-balance opacity-90">
+                Being an Ambassador isn't about having a title next to your name. It's about what you do with it. Every event you share, every student you connect with and every initiative you contribute to helps strengthen the IEEE community.
               </p>
             </div>
           </section>
@@ -280,7 +297,7 @@ function Landing() {
       <footer className="w-full bg-surface-container-low py-10 sm:py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-[40px]">
           <div className="flex flex-col md:flex-row justify-between items-center gap-5 border-b border-outline-variant pb-6 mb-6">
-            <img alt="IEEE logo" className="h-6 w-auto grayscale opacity-70" src={LOGO_URL} />
+            <img alt="IEEE SB SJCET logo" className="h-8 w-auto grayscale opacity-70" src={LOGO_URL} />
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:gap-8 text-body-md">
               <a className="text-on-surface-variant hover:text-primary" href="#">
                 Privacy
@@ -294,7 +311,10 @@ function Landing() {
             </div>
           </div>
           <div className="text-center font-label-sm text-label-sm text-on-surface-variant text-balance">
-            © 2024 IEEE. All rights reserved. Professional organization for advancement of technology.
+            <p className="font-semibold text-on-surface text-body-md mb-1">IEEE Student Branch SJCET</p>
+            <p>St. Joseph's College of Engineering and Technology, Palai</p>
+            <p>Kerala, India</p>
+            <p className="mt-4 opacity-70">© 2024 IEEE Student Ambassador Programme. All rights reserved.</p>
           </div>
         </div>
       </footer>

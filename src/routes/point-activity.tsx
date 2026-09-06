@@ -18,7 +18,7 @@ function PointActivityPage() {
   const { data: activities, isLoading } = useMyPointActivity();
 
   return (
-    <PortalShell eyebrow="Volunteer Portal">
+    <PortalShell eyebrow="Ambassador Portal">
       <div className="flex flex-col w-full gap-6">
         <header className="flex flex-col gap-2">
           <h1 className="text-headline-lg-mobile lg:text-headline-lg text-on-surface">

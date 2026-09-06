@@ -21,7 +21,7 @@ export const Route = createFileRoute("/leaderboard")({
 
 function LeaderboardPage() {
   return (
-    <PortalShell eyebrow="Volunteer Portal">
+    <PortalShell eyebrow="Ambassador Portal">
       <div className="flex flex-col gap-6">
         <header className="flex flex-col gap-2">
           <h1 className="text-headline-lg-mobile lg:text-headline-lg text-on-surface">Leaderboard</h1>

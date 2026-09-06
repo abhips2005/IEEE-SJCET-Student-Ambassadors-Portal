@@ -10,14 +10,14 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
   head: () => ({
     meta: [
-      { title: "Login | IEEE Student Ambassador Portal" },
+      { title: "Login | IEEE Student Ambassador Programme" },
       {
         name: "description",
         content:
-          "Sign in to the IEEE Student Ambassador Portal to manage your profile, tasks and event credits.",
+          "Sign in to the IEEE Student Ambassador Portal to stay connected, access resources, and keep track of your Ambassador journey.",
       },
-      { property: "og:title", content: "Login | IEEE Student Ambassador Portal" },
-      { property: "og:description", content: "Access your IEEE ambassador dashboard and tasks." },
+      { property: "og:title", content: "Login | IEEE Student Ambassador Programme" },
+      { property: "og:description", content: "Access your IEEE Ambassador dashboard." },
     ],
   }),
 });
@@ -148,12 +148,12 @@ function LoginPage() {
         <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-container rounded-full mb-4">
           <Icon name="vpn_key" className="text-primary text-[14px]" />
           <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">
-            Portal Access
+            IEEE SB SJCET
           </span>
         </div>
-        <h1 className="text-headline-lg text-on-surface mb-2">Welcome Back</h1>
+        <h1 className="text-headline-lg text-on-surface mb-2">Welcome Back, Ambassador</h1>
         <p className="text-body-md text-on-surface-variant">
-          Sign in to manage your ambassador profile, access resources, and log your event credits.
+          Sign in to your portal to stay connected, access resources, keep track of your journey, and make the most of the opportunities ahead.
         </p>
       </div>
 
@@ -236,7 +236,7 @@ function LoginPage() {
             to="/register"
             className="font-label-md text-label-md text-primary hover:text-primary-container transition-colors ml-1 underline underline-offset-4 decoration-primary/30 hover:decoration-primary"
           >
-            Request Invitation
+            Register Now
           </Link>
         </p>
       </div>

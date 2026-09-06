@@ -15,7 +15,7 @@ export const Route = createFileRoute("/profile")({
       {
         name: "description",
         content:
-          "Your ambassador profile: membership details, points earned, badges and completed volunteer tasks.",
+          "Your ambassador profile: membership details, points earned, badges and completed tasks.",
       },
       { property: "og:title", content: "Ambassador Profile" },
       { property: "og:description", content: "Membership details, points and badges." },
@@ -152,7 +152,7 @@ function ProfilePage() {
 
   if (isLoading) {
     return (
-      <PortalShell eyebrow="Volunteer Portal">
+      <PortalShell eyebrow="Ambassador Portal">
         <div className="animate-pulse space-y-6">
           <div className="bg-surface-container rounded-xl h-32" />
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -193,7 +193,7 @@ function ProfilePage() {
   ];
 
   return (
-    <PortalShell eyebrow="Volunteer Portal">
+    <PortalShell eyebrow="Ambassador Portal">
       <div className="flex flex-col gap-6">
         {/* Profile header */}
         <div className="bg-primary text-on-primary rounded-xl p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-6 shadow-md">

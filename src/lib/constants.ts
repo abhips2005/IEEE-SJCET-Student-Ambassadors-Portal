@@ -6,7 +6,7 @@ export const DEPARTMENTS: { value: string; label: string; short: string }[] = [
   { value: "cs-cy", label: "Computer Science (Cyber Security)", short: "CS-CY" },
   { value: "ad",    label: "Artificial Intelligence & DS",    short: "AD"     },
   { value: "ec",    label: "Electronics & Communication",     short: "EC"     },
-  { value: "er",    label: "Electronics & Robotics",          short: "ER"     },
+  { value: "er",    label: "Electronics & Computer",          short: "ER"     },
   { value: "eee",   label: "Electrical & Electronics",        short: "EEE"    },
   { value: "me",    label: "Mechanical Engineering",          short: "ME"     },
   { value: "ce",    label: "Civil Engineering",               short: "CE"     },
